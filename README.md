@@ -6,7 +6,7 @@ repair event, three narratives, one label generated from the parts
 transactions: the study measures how much classification performance moves
 with the field you read, against what representation and model choice move.
 
-Questions, problems, disagreements with a number: hisham.ihshaish@uwe.ac.uk
+If you have any questions, or come across a problem...or have any disagreements with a number, please let me know: hisham.ihshaish@uwe.ac.uk
 
 ## Short story
 
@@ -14,8 +14,8 @@ Questions, problems, disagreements with a number: hisham.ihshaish@uwe.ac.uk
 python3 reproduce.py
 ```
 
-That reads the shipped results and prints every headline ASRS number next to
-the paper's claim. 14 checks, no training, a few seconds. Retraining from
+That reads the reported results & prints every headline ASRS number next to
+the paper's claim basically - so we have 14 checks (see below, now training is needed). Retraining from
 scratch is the long story below.
 
 ## Getting the NASA data
