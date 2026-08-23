@@ -1,11 +1,11 @@
-"""This notebook will print paper's ASRS numbers next to what shows in results/.
+"""The script below will print paper's ASRS numbers next to what shows in results/.
 
 No training or downloads required - so this just reads the two results files and checks
 that every headline claim in the article matches them. Run it after cloning:
 
     python3 reproduce.py
 
-Each line here will essentially show the paper's value, the shipped value, and an OK or MISMATCH.
+Each line here will essentially show the paper's value, the reported value, & an OK or MISMATCH.
 If you ever see MISMATCH, something has drifted - please tell us:
 - hisham.ihshaish@uwe.ac.uk (Hisham)
 - peter.mayhew@geaerospace.com (Peter)
