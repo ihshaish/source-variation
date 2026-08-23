@@ -80,3 +80,50 @@ dataset will be sought. The single-target comparison that survives
 (predicting the action verb class from problem versus action text) was
 considered and declined: with a 69% majority class and a self-annotated
 target it would weaken rather than strengthen the paper.
+
+# Addendum (registered before tabulation): matched views inside the corpora we already hold
+
+The MaintNet no-go closed the reviewed candidates, not the question. A wider
+survey (rubric: multiple views per event; stated target provenance; public;
+scale after dedup; non-derivative views; and a distinct axis contribution)
+leaves exactly two experimental legs, capped at two whatever the results:
+
+## Leg A: ASRS matched views (data already in the paper)
+
+A1, narrative vs synopsis. Same events, same labels, same split as the
+existing Aircraft task; the reporter's narrative is written before analyst
+coding, the synopsis by the analyst who codes. Configurations frozen:
+TF-IDF + logistic regression; BiLSTM over GloVe-200; BiLSTM over word2vec
+trained on the training partition of the respective view. Three seeds,
+paired held-out tests as in the paper.
+Go/no-go A1: median 3-shingle containment of synopsis in its own narrative
+at most 0.8 (above that the synopsis is an extract, not a view, and the leg
+is dropped); median synopsis length at least 15 tokens.
+
+A2, reporter 1 vs reporter 2. Dual-report events only: one model, trained
+on primary narratives as in the paper, evaluated twice on each dual-report
+held-out record, once per narrative. This holds the event, label, stage and
+model fixed and varies only whose account is read. The training domain
+favours reporter 1 and the subset is multi-crew by construction; both are
+stated, not corrected.
+Go/no-go A2: at least 1500 dual-report records inside the task with both
+narratives of usable length, and at least 400 of them in the held-out
+partition.
+
+## Leg B: NHTSA recall campaigns (new, second industry)
+
+Three authored fields per campaign (defect description, consequence,
+corrective action), component category as target, collapsed to its top
+level. Campaign-level dedup; split grouped by campaign; configurations
+TF-IDF + BiLSTM over task-trained word2vec; three seeds.
+Go/no-go B: the flat file carries the three text fields as described; at
+least 8 component classes with 300+ campaigns after dedup; median field
+lengths at least 15 tokens each. If B fails, the Eclipse defect dataset may
+be assessed as a substitute under the same criteria, once; if that also
+fails, leg B is dropped, not replaced.
+
+## Outcome commitments, unchanged
+
+All cells report as measured. Clinical note-type findings enter the
+Discussion as independently converging literature regardless of outcomes.
+No further datasets beyond these two legs under any outcome.
