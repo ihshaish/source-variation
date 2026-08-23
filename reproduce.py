@@ -1,12 +1,12 @@
-"""Prints the paper's ASRS numbers next to what ships in results/.
+"""This notebook will print paper's ASRS numbers next to what shows in results/.
 
-No training, no downloads -- this just reads the two results files and checks
+No training or downloads required - so this just reads the two results files and checks
 that every headline claim in the article matches them. Run it after cloning:
 
     python3 reproduce.py
 
-Each line shows the paper's value, the shipped value, and OK or MISMATCH.
-If you ever see MISMATCH, something has drifted -- tell us:
+Each line here will essentially show the paper's value, the shipped value, and an OK or MISMATCH.
+If you ever see MISMATCH, something has drifted -- please tell us:
 hisham.ihshaish@uwe.ac.uk
 """
 import json, os
