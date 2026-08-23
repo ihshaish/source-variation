@@ -62,11 +62,11 @@ records, useful for checking the logic rather than the numbers. Field
 statistics, the coverage bound, the masking conditions, the alternative
 splits and the keyword baselines all live here.
 
-## What does not ship
+## What is not shown/shipped;
 
-The GE records (not ours to give), the Avi2Vec vectors (proprietary, which
-is why the public side of the paper deliberately uses only artefacts you can
-download), and trained checkpoints (large, and everything retrains from the
+The GE records (these are GE's), the Avi2Vec vectors (proprietary... which
+is why the public side of the paper uses only artefacts you can
+download), and trained checkpoints (large, & everything retrains from the
 scripts above).
 
 ## Notes
