@@ -6,7 +6,9 @@ repair event, three narratives, one label generated from the parts
 transactions: the study measures how much classification performance moves
 with the field you read, against what representation and model choice move.
 
-If you have any questions, or come across a problem...or have any disagreements with a number, please let me know: hisham.ihshaish@uwe.ac.uk
+If you have any questions, or come across a problem...or have any disagreements with a number, please let us know: 
+- hisham.ihshaish@uwe.ac.uk
+- peter.mayhew@geaerospace.com
 
 ## Short story
 
