@@ -1,17 +1,13 @@
-"""Primary statistics stage from saved
-held-out predictions.
+"""The statistics, all of them, from saved held-out predictions.
 
-- 95% bootstrap CI (10,000 record-level resamples) per config's test macro-F1
-  (seed-0 model; seed spread reported separately from the jsonl).
-- Paired approximate-randomisation test (10,000 swap permutations) for the
-  pre-specified contrast families, Holm-corrected within family:
-    A (embedding, per arch):  glove200 vs each other embedding
-    B (architecture, per emb): bilstm vs bigru
-    C (subword decomposition): fasttext vs w2vasrs, per arch
-    D (sequence decomposition): bilstm vs cnn / meanmlp, glove200
-- All on the identical held-out record set, so tests are paired by record.
+Nothing here trains. Bootstrap CIs (10k record resamples) per configuration,
+then paired approximate-randomisation tests for the pre-specified families,
+Holm-corrected within family: A embeddings, B architectures, C subword
+(fastText vs word2vec), D sequence (BiLSTM vs CNN / mean pooling). Paired by
+record -- every model saw the identical held-out set.
 
-python3 l1_stats.py  -> results/l1_stats.json
+python3 l1_stats.py   writes results/l1_stats.json, which is the file the
+paper's ASRS numbers come from.
 """
 import glob
 import json

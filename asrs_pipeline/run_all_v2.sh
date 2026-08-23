@@ -1,6 +1,6 @@
 #!/bin/zsh
 cd "$(dirname "$0")"
-export ASRS_DIR=/Users/Hisham/github_page/PhD_peter/data_asrs_v2
+export ASRS_DIR=${ASRS_DIR:-../data_asrs_v2}   # point this at your ASRS CSV export
 export L0_OUT=l0_out_v2 L1_DATA=l1_data_v2 L1_RES=results_v2 MAX_YEAR=2021
 mkdir -p l1_data_v2 results_v2
 python3 l0_corpus_stats.py > l0_v2.log 2>&1

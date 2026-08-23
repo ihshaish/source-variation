@@ -1,19 +1,15 @@
-"""L1 trainer — NASA Aircraft task, one embedding x architecture config.
+"""One embedding x one architecture on the Aircraft task.
 
-Setup per main.tex §4.4/§4.5: frozen embedding (OOV -> shared fallback
-vector), BiLSTM/BiGRU with terminal-hidden-state pooling, 10-fold stratified CV
-inside the 80% training partition (5% within-fold validation, early stopping on
-validation macro-F1), then final models on the full training partition (3 seeds)
-scored once on the 20% held-out test set with per-record predictions saved for
-the bootstrap and randomisation stage (l1_stats.py).
+Frozen embedding (OOV goes to a shared fallback vector), BiLSTM or BiGRU,
+10-fold CV inside the training partition, then three final models (seeds 0-2)
+scored once on the held-out 20%. Per-record predictions are saved because
+l1_stats.py does all the statistics later -- this script just trains.
 
-Fixed choices stated in the paper: max sequence length 256 tokens (covers 70%
-of narratives unclipped; p95=547), batch 128, Adam 1e-3, dropout 0.3, hidden 64
-per direction, patience 2, max 15 epochs. Embeddings are never fine-tuned.
+Run --smoke first: two minutes, and it tells you whether your data and GloVe
+paths are right before you commit a GPU evening to the full queue.
 
-Usage: python3 l1_train.py --emb glove200 --arch bilstm [--smoke]
-Results append to results/l1_results.jsonl (idempotent by key); final-model
-test predictions to results/preds_{emb}_{arch}_s{seed}.npz
+python3 l1_train.py --emb glove200 --arch bilstm [--smoke]
+Results append to results/l1_results.jsonl, keyed, so reruns are safe.
 """
 import argparse
 import gzip

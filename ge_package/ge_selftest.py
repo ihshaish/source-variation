@@ -1,7 +1,9 @@
-"""End-to-end self-test on SYNTHETIC data: proves the package runs before any
-GE data touches it. Generates a fake CSV + tiny GloVe stubs, then exercises
-build -> embeds -> train (smoke) -> strata mask -> leakage -> baselines -> stats.
-Usage: python ge_selftest.py
+"""Runs the whole GE package on invented data. No GE record ever touches this.
+
+Generates a fake CSV and tiny GloVe stubs, then walks build -> embeds ->
+train (smoke) -> strata mask -> leakage -> baselines -> stats. If this passes
+on your machine, the pipeline logic is fine; the numbers are meaningless by
+design. python ge_selftest.py
 """
 import csv, json, os, random, subprocess, sys, shutil
 

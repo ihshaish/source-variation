@@ -1,19 +1,7 @@
-"""L6 ablation probes — NASA Aircraft task, BiLSTM/GloVe-200, finals stage only.
-
-Two probes requested by review:
-  --mode shuffle : shuffle token order per record (train and test, deterministic
-                   per-record rng), same 256 cap. Isolates order information:
-                   if the shuffled model matches the ordered one, the mean-pool
-                   gap is not about reading order.
-  --mode cap512  : raise the sequence cap from 256 to 512 (truncating ~5% of
-                   narratives instead of 30%). Sensitivity of the sequence-
-                   awareness estimate to truncation.
-
-Reuses l1_train wholesale via import + patch; writes to results_ablate/ so keys
-never collide with the main stage. Finals only (3 seeds, held-out test); the CV
-stage is skipped, matching how these probes are cited in the paper.
-
-Usage: python3 l6_ablations.py --mode shuffle [--smoke]
+"""Two probes on the trained BiLSTM/GloVe-200 setting: shuffled token order
+(train and test on a fixed permutation per record) and a 512-token cap.
+Cheap way to ask what the sequence model is actually using -- order, or just
+the ability to aggregate. Appends to results/ablation_results.jsonl.
 """
 import argparse
 import importlib
