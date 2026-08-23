@@ -1,0 +1,244 @@
+{
+ "configs": {
+  "fasttext_bigru": {
+   "test_macro_f1": 0.8791,
+   "ci95": [
+    0.8742,
+    0.8838
+   ]
+  },
+  "fasttext_bilstm": {
+   "test_macro_f1": 0.8653,
+   "ci95": [
+    0.8604,
+    0.8704
+   ]
+  },
+  "glove100_bigru": {
+   "test_macro_f1": 0.8653,
+   "ci95": [
+    0.8602,
+    0.8702
+   ]
+  },
+  "glove100_bilstm": {
+   "test_macro_f1": 0.8578,
+   "ci95": [
+    0.8527,
+    0.8628
+   ]
+  },
+  "glove200_bigru": {
+   "test_macro_f1": 0.8701,
+   "ci95": [
+    0.8652,
+    0.8751
+   ]
+  },
+  "glove200_bilstm": {
+   "test_macro_f1": 0.8603,
+   "ci95": [
+    0.8551,
+    0.8653
+   ]
+  },
+  "glove200_cnn": {
+   "test_macro_f1": 0.8688,
+   "ci95": [
+    0.8639,
+    0.8738
+   ]
+  },
+  "glove200_meanmlp": {
+   "test_macro_f1": 0.8357,
+   "ci95": [
+    0.8303,
+    0.841
+   ]
+  },
+  "glove300_bigru": {
+   "test_macro_f1": 0.8652,
+   "ci95": [
+    0.8602,
+    0.8702
+   ]
+  },
+  "glove300_bilstm": {
+   "test_macro_f1": 0.8623,
+   "ci95": [
+    0.8571,
+    0.8673
+   ]
+  },
+  "glove50_bigru": {
+   "test_macro_f1": 0.8605,
+   "ci95": [
+    0.8554,
+    0.8656
+   ]
+  },
+  "glove50_bilstm": {
+   "test_macro_f1": 0.8287,
+   "ci95": [
+    0.8231,
+    0.8342
+   ]
+  },
+  "w2vasrs_bigru": {
+   "test_macro_f1": 0.8796,
+   "ci95": [
+    0.8748,
+    0.8844
+   ]
+  },
+  "w2vasrs_bilstm": {
+   "test_macro_f1": 0.8805,
+   "ci95": [
+    0.8756,
+    0.8852
+   ]
+  }
+ },
+ "contrasts": [
+  {
+   "family": "A-emb",
+   "contrast": "bilstm: glove200 vs fasttext",
+   "delta_f1": -0.0051,
+   "p": 0.0238,
+   "p_holm": 0.0714
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bilstm: glove200 vs glove100",
+   "delta_f1": 0.0025,
+   "p": 0.2083,
+   "p_holm": 0.4166
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bilstm: glove200 vs glove300",
+   "delta_f1": -0.002,
+   "p": 0.2947,
+   "p_holm": 0.4166
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bilstm: glove200 vs glove50",
+   "delta_f1": 0.0316,
+   "p": 0.0001,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bilstm: glove200 vs w2vasrs",
+   "delta_f1": -0.0202,
+   "p": 0.0001,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bigru: glove200 vs fasttext",
+   "delta_f1": -0.009,
+   "p": 0.0001,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bigru: glove200 vs glove100",
+   "delta_f1": 0.0048,
+   "p": 0.0129,
+   "p_holm": 0.0198
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bigru: glove200 vs glove300",
+   "delta_f1": 0.0049,
+   "p": 0.0099,
+   "p_holm": 0.0198
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bigru: glove200 vs glove50",
+   "delta_f1": 0.0096,
+   "p": 0.0001,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "A-emb",
+   "contrast": "bigru: glove200 vs w2vasrs",
+   "delta_f1": -0.0095,
+   "p": 0.0001,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "B-arch",
+   "contrast": "fasttext: bilstm vs bigru",
+   "delta_f1": -0.0137,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "family": "B-arch",
+   "contrast": "glove100: bilstm vs bigru",
+   "delta_f1": -0.0074,
+   "p": 0.0004,
+   "p_holm": 0.0012
+  },
+  {
+   "family": "B-arch",
+   "contrast": "glove200: bilstm vs bigru",
+   "delta_f1": -0.0098,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "family": "B-arch",
+   "contrast": "glove300: bilstm vs bigru",
+   "delta_f1": -0.0029,
+   "p": 0.1514,
+   "p_holm": 0.3028
+  },
+  {
+   "family": "B-arch",
+   "contrast": "glove50: bilstm vs bigru",
+   "delta_f1": -0.0318,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "family": "B-arch",
+   "contrast": "w2vasrs: bilstm vs bigru",
+   "delta_f1": 0.0008,
+   "p": 0.6341,
+   "p_holm": 0.6341
+  },
+  {
+   "family": "C-subword",
+   "contrast": "bilstm: fasttext vs w2vasrs",
+   "delta_f1": -0.0151,
+   "p": 0.0001,
+   "p_holm": 0.0002
+  },
+  {
+   "family": "C-subword",
+   "contrast": "bigru: fasttext vs w2vasrs",
+   "delta_f1": -0.0006,
+   "p": 0.6176,
+   "p_holm": 0.6176
+  },
+  {
+   "family": "D-sequence",
+   "contrast": "glove200: bilstm vs cnn",
+   "delta_f1": -0.0086,
+   "p": 0.0002,
+   "p_holm": 0.0002
+  },
+  {
+   "family": "D-sequence",
+   "contrast": "glove200: bilstm vs meanmlp",
+   "delta_f1": 0.0246,
+   "p": 0.0001,
+   "p_holm": 0.0002
+  }
+ ]
+}

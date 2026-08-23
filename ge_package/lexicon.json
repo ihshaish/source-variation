@@ -1,0 +1,10 @@
+{
+  "_note": "To be completed with domain knowledge before ge_leakage.py runs. Class ids follow label_map.json. Terms are matched as lower-cased whole tokens after the pipeline tokeniser ([a-z][a-z0-9/-]+).",
+  "classes": {
+    "0": {"class_names": ["processor"], "synonyms_abbreviations": [], "part_numbers": []},
+    "1": {"class_names": ["processor", "keypanel", "key-panel"], "synonyms_abbreviations": [], "part_numbers": []},
+    "2": {"class_names": [], "synonyms_abbreviations": ["nff", "no-fault-found"], "part_numbers": []},
+    "3": {"class_names": ["keypanel", "key-panel"], "synonyms_abbreviations": [], "part_numbers": []}
+  },
+  "replacement_verbs": ["replaced", "changed", "fitted", "swapped", "installed", "renewed", "exchanged"]
+}

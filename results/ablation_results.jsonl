@@ -1,0 +1,6 @@
+{"key": "shuffle_final_glove200_bilstm_s0", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 0, "ablation": "shuffle", "test_macro_f1": 0.8555, "val_f1": 0.85, "secs": 358}
+{"key": "shuffle_final_glove200_bilstm_s1", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 1, "ablation": "shuffle", "test_macro_f1": 0.8554, "val_f1": 0.852, "secs": 278}
+{"key": "shuffle_final_glove200_bilstm_s2", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 2, "ablation": "shuffle", "test_macro_f1": 0.8576, "val_f1": 0.8629, "secs": 355}
+{"key": "cap512_final_glove200_bilstm_s0", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 0, "ablation": "cap512", "test_macro_f1": 0.8536, "val_f1": 0.8556, "secs": 506}
+{"key": "cap512_final_glove200_bilstm_s1", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 1, "ablation": "cap512", "test_macro_f1": 0.8637, "val_f1": 0.8601, "secs": 755}
+{"key": "cap512_final_glove200_bilstm_s2", "mode": "final", "emb": "glove200", "arch": "bilstm", "seed": 2, "ablation": "cap512", "test_macro_f1": 0.8645, "val_f1": 0.8648, "secs": 504}

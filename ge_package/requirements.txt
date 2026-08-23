@@ -1,0 +1,4 @@
+numpy>=1.24
+torch>=2.0
+gensim>=4.3
+scikit-learn>=1.3
