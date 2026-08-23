@@ -6,8 +6,9 @@ that every headline claim in the article matches them. Run it after cloning:
     python3 reproduce.py
 
 Each line here will essentially show the paper's value, the shipped value, and an OK or MISMATCH.
-If you ever see MISMATCH, something has drifted -- please tell us:
-hisham.ihshaish@uwe.ac.uk
+If you ever see MISMATCH, something has drifted - please tell us:
+- hisham.ihshaish@uwe.ac.uk (Hisham)
+- peter.mayhew@geaerospace.com (Peter)
 """
 import json, os
 
