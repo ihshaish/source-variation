@@ -53,3 +53,30 @@ investigation. Open Repair Alliance: domain drift. MIMIC: domain drift and
 access agreements. Further models, splits or tests on the GE data: the
 vertical axis is saturated. Blinded re-audit: the follow-up study the paper
 already specifies, not this paper.
+
+## Phase 0 outcome (recorded 2026-10-11): no-go
+
+The annotated release (Zenodo 20779601, CC BY 4.0, 6169 records) was
+inspected against the criteria above. Findings:
+
+- The released ACTION_TYPE column is empty and PROBLEM_TYPE is 97% one
+  value, so both advertised taxonomies are unusable as shipped.
+- A verb-class taxonomy derived from the TAGGEDACTION spans passes the
+  action-side support bar, barely: replace-install 4221, inspect-check 434,
+  repair-secure 418, adjust 301 (69% majority class).
+- The problem side fails G2 outright. The fleet's logbook is topically
+  homogeneous: LOCATION collapses to cylinder (3999) and powerplant (1028)
+  with nothing else above 9 records, and PROBLEM_PART collapses the same
+  way (the frequent parts are all gaskets, covers and baffles). No
+  problem-side taxonomy with four supported classes exists, so the
+  input-by-target matrix cannot be built.
+- G4 is also doubtful: 3531 unique problem texts, roughly 2800 groups
+  under an approximate near-duplicate collapse, and the true figure under
+  the full procedure would be lower.
+
+Per the criteria, any failure is a no-go, and the fallback applies: the
+paper submits as the bounded two-corpus study it is, and no substitute
+dataset will be sought. The single-target comparison that survives
+(predicting the action verb class from problem versus action text) was
+considered and declined: with a 69% majority class and a self-annotated
+target it would weaken rather than strengthen the paper.
