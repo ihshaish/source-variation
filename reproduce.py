@@ -1,4 +1,4 @@
-"""This notebook will print paper's ASRS numbers next to what shows in results/.
+"""The script below will print paper's ASRS numbers next to what shows in results/.
 
 No training or downloads required - so this just reads the two results files and checks
 that every headline claim in the article matches them. Run it after cloning:
