@@ -1,10 +1,13 @@
 # source-variation
 
-Code and results for "Sources of performance variation in the classification
-of avionics maintenance records" (submitted to Computers in Industry). One
-repair event, three narratives, one label generated from the parts
-transactions: the study measures how much classification performance moves
-with the field you read, against what representation and model choice move.
+Code and results for "Sources of performance variation in operational text
+classification" (submitted to Computers in Industry). One operational case,
+several records of it: the study measures how much classification performance
+moves with the record you read, against what representation and model choice
+move. Three systems: GE repair events (three narratives, one label from the
+parts transactions), ASRS safety reports (reporter narrative, supplemental
+narrative, analyst synopsis), NHTSA recalls (defect summary, consequence,
+remedy).
 
 If you have any questions, or come across a problem...or have any disagreements with a number, please let us know: 
 - hisham.ihshaish@uwe.ac.uk
@@ -16,9 +19,10 @@ If you have any questions, or come across a problem...or have any disagreements 
 python3 reproduce.py
 ```
 
-That reads the reported results & prints every headline ASRS number next to
-the paper's claim basically - so we have 14 checks (see below, now training is needed). Retraining from
-scratch is the long story below.
+That reads the reported results & prints every headline public-data number
+next to the paper's claim basically - 26 checks now (14 for the ASRS
+reimplementation, 12 for the matched views and NHTSA). No training needed.
+Retraining from scratch is the long story below.
 
 ## Getting the NASA data
 
@@ -68,13 +72,77 @@ splits and the keyword baselines all live here.
 
 The GE records (these are GE's), the Avi2Vec vectors (proprietary... which
 is why the public side of the paper uses only artefacts you can
-download), and trained checkpoints (large, & everything retrains from the
-scripts above).
+download), trained checkpoints (large, & everything retrains from the
+scripts above), and views_task.jsonl.gz (53MB; build_views.py rebuilds it
+from your own ASRS export in a minute).
+
+## views/
+
+The matched-view experiments on the same Aircraft task (same cases, same
+split - build_views.py joins synopsis and supplemental narrative to the task
+by report number, from the same CSV export as above). Then it is one queue:
+
+```
+cd views
+python3 build_views.py         # needs ASRS_DIR, writes views_task.jsonl.gz
+bash run_views.sh              # w2v per view -> BiLSTM finals -> tfidf -> stats
+python3 echo_mask.py           # taxonomy-token mask, both views
+python3 matrix_2x2.py          # dual-report train/test matrix
+python3 meanpool_views.py      # the non-sequence control
+python3 interaction_test.py    # D = (seq-pool | syn) - (seq-pool | narr)
+```
+
+The synopsis is the analyst's 19-token rewrite and it beats the 178-token
+narrative - but only under sequence models, which is rather the point.
+
+## nhtsa/
+
+The second public system. nhtsa_crawl.py enumerates recall campaigns by
+campaign number against the public API (polite, resumable, takes hours),
+or skip the crawl: nhtsa_campaigns.jsonl.gz is the exact snapshot the paper
+used (16626 campaigns after de-dup, campaign numbers 2000-2026, retrieved
+August 2026; SHA256 in SNAPSHOT_SHA256.txt, held-out campaign numbers in
+nhtsa_test_campaigns.txt - the split is also fully determined by seed
+20260802 in the code). nhtsa_leg2.py builds the 16-class component task and
+runs TF-IDF + BiLSTM per field; nhtsa_leg3_mask.py re-runs everything with
+every token from the class labels masked out of training and evaluation.
+nhtsa_leg.py is the first pass kept for the record - its consequence-field
+number was inflated by boilerplate duplicates straddling the split, which is
+exactly what leg2's any-field duplicate confinement fixes.
+
+## What was registered, what was post hoc
+
+protocol_maintnet.md is the registered note, written and committed before we
+looked at any of this data - the name is historical (MaintNet was the first
+candidate dataset; it failed its own pre-registered go/no-go and the addendum
+in the same file registered the ASRS-views and NHTSA legs). We kept the
+filename because renaming a registration defeats the point; the git
+timestamps are the receipts.
+
+| analysis | dataset | status |
+|---|---|---|
+| narrative vs synopsis | ASRS | registered |
+| primary vs supplemental, raw | ASRS | registered |
+| length stratification + matched subset | ASRS | post hoc |
+| 2x2 dual train/test matrix | ASRS | post hoc |
+| taxonomy-token mask | ASRS | post hoc |
+| TF-IDF / char n-gram / mean-pool controls | ASRS | post hoc (controls) |
+| ensemble + disagreement budget | ASRS | post hoc |
+| interaction contrast D | ASRS | post hoc |
+| field hierarchy (summary/consequence/remedy) | NHTSA | registered |
+| any-field duplicate confinement re-run | NHTSA | post hoc (hygiene) |
+| class-vocabulary mask | NHTSA | post hoc |
+| MaintNet phase 0 | MaintNet | registered, no-go |
+
+Post hoc is not a dirty word here - everything above is labelled the same
+way in the paper. The registered contrasts carry the confirmatory weight;
+the rest explains them.
 
 ## Notes
 
 The queue scripts are plain shell loops, not a scheduler, and assume one job
-per GPU. l1_stats.py is the only place statistics happen; everything
-upstream just writes per-record predictions, so you can re-run the stats
-without retraining. If a number here and a number in the paper ever
-disagree, trust results/ and write to us.
+per GPU (the views and NHTSA queues are happy on a laptop with MPS or CPU).
+l1_stats.py and views/views_stats.py are the only places statistics happen;
+everything upstream just writes per-record predictions, so you can re-run
+the stats without retraining. If a number here and a number in the paper
+ever disagree, trust results/ and write to us.

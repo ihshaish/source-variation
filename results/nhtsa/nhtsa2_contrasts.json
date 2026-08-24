@@ -1,0 +1,74 @@
+[
+ {
+  "contrast": "tfidf s0: summary vs conseq",
+  "delta": 0.0937,
+  "p": 0.0002,
+  "p_holm": 0.0024
+ },
+ {
+  "contrast": "tfidf s0: summary vs remedy",
+  "delta": 0.1425,
+  "p": 0.0002,
+  "p_holm": 0.0022
+ },
+ {
+  "contrast": "tfidf s0: remedy vs conseq",
+  "delta": -0.0488,
+  "p": 0.0002,
+  "p_holm": 0.002
+ },
+ {
+  "contrast": "bilstm s0: summary vs conseq",
+  "delta": 0.1137,
+  "p": 0.0002,
+  "p_holm": 0.0018
+ },
+ {
+  "contrast": "bilstm s1: summary vs conseq",
+  "delta": 0.1132,
+  "p": 0.0002,
+  "p_holm": 0.0016
+ },
+ {
+  "contrast": "bilstm s2: summary vs conseq",
+  "delta": 0.1178,
+  "p": 0.0002,
+  "p_holm": 0.0014
+ },
+ {
+  "contrast": "bilstm s0: summary vs remedy",
+  "delta": 0.1598,
+  "p": 0.0002,
+  "p_holm": 0.0012
+ },
+ {
+  "contrast": "bilstm s1: summary vs remedy",
+  "delta": 0.1551,
+  "p": 0.0002,
+  "p_holm": 0.001
+ },
+ {
+  "contrast": "bilstm s2: summary vs remedy",
+  "delta": 0.1287,
+  "p": 0.0002,
+  "p_holm": 0.0008
+ },
+ {
+  "contrast": "bilstm s0: remedy vs conseq",
+  "delta": -0.0461,
+  "p": 0.0002,
+  "p_holm": 0.0006
+ },
+ {
+  "contrast": "bilstm s1: remedy vs conseq",
+  "delta": -0.0418,
+  "p": 0.001,
+  "p_holm": 0.002
+ },
+ {
+  "contrast": "bilstm s2: remedy vs conseq",
+  "delta": -0.0109,
+  "p": 0.4067,
+  "p_holm": 0.4067
+ }
+]

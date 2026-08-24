@@ -1,0 +1,17 @@
+{
+ "narr": {
+  "records": 89194,
+  "median_tokens": 178,
+  "vocab": 87145
+ },
+ "syn": {
+  "records": 89186,
+  "median_tokens": 19,
+  "vocab": 25218
+ },
+ "r2": {
+  "records": 7637,
+  "median_tokens": 91,
+  "vocab": 17832
+ }
+}

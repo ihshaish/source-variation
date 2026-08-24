@@ -1,0 +1,14 @@
+{
+ "syn": {
+  "plain": 0.8924,
+  "echo_masked": 0.8874,
+  "cost": 0.005,
+  "echo_hit_rate": 0.33
+ },
+ "narr": {
+  "plain": 0.8711,
+  "echo_masked": 0.8683,
+  "cost": 0.0027,
+  "echo_hit_rate": 0.776
+ }
+}

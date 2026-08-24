@@ -1,0 +1,145 @@
+{
+ "configs": {
+  "narr_glove200": {
+   "test_macro_f1": 0.8603,
+   "ci95": [
+    0.8552,
+    0.8654
+   ]
+  },
+  "narr_tfidf": {
+   "test_macro_f1": 0.8816,
+   "ci95": [
+    0.8768,
+    0.8863
+   ]
+  },
+  "narr_w2vview": {
+   "test_macro_f1": 0.8711,
+   "ci95": [
+    0.8662,
+    0.876
+   ]
+  },
+  "syn_glove200": {
+   "test_macro_f1": 0.8785,
+   "ci95": [
+    0.8736,
+    0.8833
+   ]
+  },
+  "syn_tfidf": {
+   "test_macro_f1": 0.8822,
+   "ci95": [
+    0.8774,
+    0.887
+   ]
+  },
+  "syn_w2vview": {
+   "test_macro_f1": 0.8924,
+   "ci95": [
+    0.8878,
+    0.8968
+   ]
+  }
+ },
+ "contrasts": [
+  {
+   "family": "view",
+   "contrast": "tfidf s0: narr vs syn",
+   "delta_f1": -0.0007,
+   "p": 0.7806,
+   "p_holm": 0.7806
+  },
+  {
+   "family": "view",
+   "contrast": "glove200 s0: narr vs syn",
+   "delta_f1": -0.0182,
+   "p": 0.0001,
+   "p_holm": 0.0013
+  },
+  {
+   "family": "view",
+   "contrast": "glove200 s1: narr vs syn",
+   "delta_f1": -0.0138,
+   "p": 0.0001,
+   "p_holm": 0.0012
+  },
+  {
+   "family": "view",
+   "contrast": "glove200 s2: narr vs syn",
+   "delta_f1": -0.0153,
+   "p": 0.0001,
+   "p_holm": 0.0011
+  },
+  {
+   "family": "view",
+   "contrast": "w2vview s0: narr vs syn",
+   "delta_f1": -0.0214,
+   "p": 0.0001,
+   "p_holm": 0.001
+  },
+  {
+   "family": "view",
+   "contrast": "w2vview s1: narr vs syn",
+   "delta_f1": -0.0121,
+   "p": 0.0001,
+   "p_holm": 0.0009
+  },
+  {
+   "family": "view",
+   "contrast": "w2vview s2: narr vs syn",
+   "delta_f1": -0.0109,
+   "p": 0.0001,
+   "p_holm": 0.0008
+  },
+  {
+   "family": "author",
+   "contrast": "glove200_s0: r1 vs r2",
+   "delta_f1": 0.1699,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0007
+  },
+  {
+   "family": "author",
+   "contrast": "glove200_s1: r1 vs r2",
+   "delta_f1": 0.167,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0006
+  },
+  {
+   "family": "author",
+   "contrast": "glove200_s2: r1 vs r2",
+   "delta_f1": 0.1648,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0005
+  },
+  {
+   "family": "author",
+   "contrast": "w2vview_s0: r1 vs r2",
+   "delta_f1": 0.1805,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0004
+  },
+  {
+   "family": "author",
+   "contrast": "w2vview_s1: r1 vs r2",
+   "delta_f1": 0.1867,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0003
+  },
+  {
+   "family": "author",
+   "contrast": "w2vview_s2: r1 vs r2",
+   "delta_f1": 0.1697,
+   "p": 0.0001,
+   "n": 1530,
+   "p_holm": 0.0002
+  }
+ ]
+}

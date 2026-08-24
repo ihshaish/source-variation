@@ -1,0 +1,113 @@
+{
+ "interaction": [
+  {
+   "seed": 0,
+   "D": 0.0195,
+   "ci95": [
+    0.0144,
+    0.0244
+   ],
+   "excludes_zero": true
+  },
+  {
+   "seed": 1,
+   "D": 0.014,
+   "ci95": [
+    0.0088,
+    0.019
+   ],
+   "excludes_zero": true
+  },
+  {
+   "seed": 2,
+   "D": 0.0181,
+   "ci95": [
+    0.0132,
+    0.023
+   ],
+   "excludes_zero": true
+  }
+ ],
+ "reversal": [
+  {
+   "view": "narr",
+   "seed": 0,
+   "tfidf_minus_bilstm": 0.0105,
+   "p": 0.0002
+  },
+  {
+   "view": "narr",
+   "seed": 1,
+   "tfidf_minus_bilstm": 0.0031,
+   "p": 0.1416
+  },
+  {
+   "view": "narr",
+   "seed": 2,
+   "tfidf_minus_bilstm": 0.0066,
+   "p": 0.0012
+  },
+  {
+   "view": "syn",
+   "seed": 0,
+   "tfidf_minus_bilstm": -0.0102,
+   "p": 0.0002
+  },
+  {
+   "view": "syn",
+   "seed": 1,
+   "tfidf_minus_bilstm": -0.0084,
+   "p": 0.0002
+  },
+  {
+   "view": "syn",
+   "seed": 2,
+   "tfidf_minus_bilstm": -0.0036,
+   "p": 0.057
+  }
+ ],
+ "ensemble_holm": [
+  {
+   "emb": "glove200",
+   "seed": 0,
+   "delta": 0.0106,
+   "p": 0.0002,
+   "p_holm": 0.0012
+  },
+  {
+   "emb": "glove200",
+   "seed": 1,
+   "delta": 0.0128,
+   "p": 0.0002,
+   "p_holm": 0.001
+  },
+  {
+   "emb": "glove200",
+   "seed": 2,
+   "delta": 0.0091,
+   "p": 0.0002,
+   "p_holm": 0.0008
+  },
+  {
+   "emb": "w2vview",
+   "seed": 0,
+   "delta": 0.0047,
+   "p": 0.0104,
+   "p_holm": 0.0104
+  },
+  {
+   "emb": "w2vview",
+   "seed": 1,
+   "delta": 0.0113,
+   "p": 0.0002,
+   "p_holm": 0.0006
+  },
+  {
+   "emb": "w2vview",
+   "seed": 2,
+   "delta": 0.0107,
+   "p": 0.0002,
+   "p_holm": 0.0004
+  }
+ ]
+}

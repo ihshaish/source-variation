@@ -1,0 +1,15 @@
+{"key": "smoke_final_syn_glove200_s0", "view": "syn", "emb": "glove200", "seed": 0, "test_macro_f1": 0.6104, "val_f1": 0.5278, "secs": 2}
+{"key": "final_syn_glove200_s0", "view": "syn", "emb": "glove200", "seed": 0, "test_macro_f1": 0.8785, "val_f1": 0.8803, "secs": 119}
+{"key": "final_syn_glove200_s1", "view": "syn", "emb": "glove200", "seed": 1, "test_macro_f1": 0.8706, "val_f1": 0.8602, "secs": 71}
+{"key": "final_syn_glove200_s2", "view": "syn", "emb": "glove200", "seed": 2, "test_macro_f1": 0.8744, "val_f1": 0.8694, "secs": 71}
+{"key": "final_syn_w2vview_s0", "view": "syn", "emb": "w2vview", "seed": 0, "test_macro_f1": 0.8924, "val_f1": 0.8974, "secs": 157}
+{"key": "final_syn_w2vview_s1", "view": "syn", "emb": "w2vview", "seed": 1, "test_macro_f1": 0.8906, "val_f1": 0.8831, "secs": 142}
+{"key": "final_syn_w2vview_s2", "view": "syn", "emb": "w2vview", "seed": 2, "test_macro_f1": 0.8858, "val_f1": 0.8828, "secs": 99}
+{"key": "final_narr_glove200_s0", "view": "narr", "emb": "glove200", "seed": 0, "test_macro_f1": 0.8603, "val_f1": 0.8559, "secs": 275, "dual_r1_f1": 0.8465, "dual_r2_f1": 0.6765}
+{"key": "final_narr_glove200_s1", "view": "narr", "emb": "glove200", "seed": 1, "test_macro_f1": 0.8568, "val_f1": 0.85, "secs": 274, "dual_r1_f1": 0.8368, "dual_r2_f1": 0.6698}
+{"key": "final_narr_glove200_s2", "view": "narr", "emb": "glove200", "seed": 2, "test_macro_f1": 0.859, "val_f1": 0.8607, "secs": 245, "dual_r1_f1": 0.8356, "dual_r2_f1": 0.6708}
+{"key": "final_narr_w2vview_s0", "view": "narr", "emb": "w2vview", "seed": 0, "test_macro_f1": 0.8711, "val_f1": 0.8714, "secs": 213, "dual_r1_f1": 0.865, "dual_r2_f1": 0.6844}
+{"key": "final_narr_w2vview_s1", "view": "narr", "emb": "w2vview", "seed": 1, "test_macro_f1": 0.8785, "val_f1": 0.8781, "secs": 482, "dual_r1_f1": 0.8828, "dual_r2_f1": 0.6961}
+{"key": "final_narr_w2vview_s2", "view": "narr", "emb": "w2vview", "seed": 2, "test_macro_f1": 0.8749, "val_f1": 0.877, "secs": 368, "dual_r1_f1": 0.8673, "dual_r2_f1": 0.6976}
+{"key": "final_narr_tfidf_s0", "view": "narr", "emb": "tfidf", "seed": 0, "test_macro_f1": 0.8816}
+{"key": "final_syn_tfidf_s0", "view": "syn", "emb": "tfidf", "seed": 0, "test_macro_f1": 0.8822}

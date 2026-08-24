@@ -1,0 +1,2 @@
+7c52824bfbc518d299aea4134230f8cd64df456888ddf3bf913fd6bd6c4d724c  /Users/Hisham/github_page/PhD_peter/views_wip/nhtsa_campaigns.jsonl
+c12b9a83c9562f17952455059cb8cc2e98393dd547160864720aeb09c143bce9  /Users/Hisham/github_page/PhD_peter/source-variation/nhtsa/nhtsa_campaigns.jsonl.gz

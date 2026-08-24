@@ -1,0 +1,50 @@
+[
+ {
+  "key": "nhtsa_summary_tfidf_s0",
+  "f1": 0.7808
+ },
+ {
+  "key": "nhtsa_conseq_tfidf_s0",
+  "f1": 0.6766
+ },
+ {
+  "key": "nhtsa_remedy_tfidf_s0",
+  "f1": 0.6151
+ },
+ {
+  "key": "nhtsa_summary_bilstm_s0",
+  "f1": 0.7125
+ },
+ {
+  "key": "nhtsa_summary_bilstm_s1",
+  "f1": 0.6925
+ },
+ {
+  "key": "nhtsa_summary_bilstm_s2",
+  "f1": 0.7189
+ },
+ {
+  "key": "nhtsa_conseq_bilstm_s0",
+  "f1": 0.6308
+ },
+ {
+  "key": "nhtsa_conseq_bilstm_s1",
+  "f1": 0.6335
+ },
+ {
+  "key": "nhtsa_conseq_bilstm_s2",
+  "f1": 0.6292
+ },
+ {
+  "key": "nhtsa_remedy_bilstm_s0",
+  "f1": 0.5664
+ },
+ {
+  "key": "nhtsa_remedy_bilstm_s1",
+  "f1": 0.5807
+ },
+ {
+  "key": "nhtsa_remedy_bilstm_s2",
+  "f1": 0.5555
+ }
+]
