@@ -1,0 +1,31 @@
+{
+ "interaction_glove": [
+  {
+   "seed": 0,
+   "D": 0.0104,
+   "ci95": [
+    0.0042,
+    0.0166
+   ],
+   "excludes_zero": true
+  },
+  {
+   "seed": 1,
+   "D": 0.0088,
+   "ci95": [
+    0.0024,
+    0.015
+   ],
+   "excludes_zero": true
+  },
+  {
+   "seed": 2,
+   "D": 0.0002,
+   "ci95": [
+    -0.006,
+    0.0064
+   ],
+   "excludes_zero": false
+  }
+ ]
+}

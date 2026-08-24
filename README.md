@@ -20,8 +20,9 @@ python3 reproduce.py
 ```
 
 That reads the reported results & prints every headline public-data number
-next to the paper's claim basically - 26 checks now (14 for the ASRS
-reimplementation, 12 for the matched views and NHTSA). No training needed.
+next to the paper's claim basically - 29 checks now (14 for the ASRS
+reimplementation, 12 for the matched views and NHTSA, 3 for the
+shared-representation controls). No training needed.
 Retraining from scratch is the long story below.
 
 ## Getting the NASA data
@@ -129,10 +130,19 @@ timestamps are the receipts.
 | TF-IDF / char n-gram / mean-pool controls | ASRS | post hoc (controls) |
 | ensemble + disagreement budget | ASRS | post hoc |
 | interaction contrast D | ASRS | post hoc |
+| shared-representation control for D (control_glove_D.py) | ASRS | post hoc |
 | field hierarchy (summary/consequence/remedy) | NHTSA | registered |
 | any-field duplicate confinement re-run | NHTSA | post hoc (hygiene) |
 | class-vocabulary mask | NHTSA | post hoc |
+| shared-representation field control (control_nhtsa_shared.py) | NHTSA | post hoc |
 | MaintNet phase 0 | MaintNet | registered, no-go |
+
+The two control_ scripts are the review-round controls: D re-estimated with
+GloVe-200 fixed across both views (survives, 2/3 CIs exclude zero, and the
+same runs showed the mean-pooled view contrast is specific to view-trained
+embeddings - see CLAIMS_REGISTER_v5.1_controls.md), and the NHTSA hierarchy
+under one shared word2vec (summary primacy survives, the consequence-remedy
+ordering does not - it was partly the field-trained representations).
 
 Post hoc is not a dirty word here - everything above is labelled the same
 way in the paper. The registered contrasts carry the confirmatory weight;

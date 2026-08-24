@@ -90,6 +90,22 @@ checks.append(("ensemble beats better single view, Holm <= 0.0104, all 6",
                "<=0.0104", max(e["p_holm"] for e in ens),
                all(e["delta"] > 0 and e["p_holm"] <= 0.0104 for e in ens)))
 
+# --- shared-representation controls (post hoc, review round) ---
+cg = json.load(open(os.path.join(here, "results", "views", "control_glove_D.json")))
+gi = cg["interaction_glove"]
+checks.append(("shared-GloVe D positive all runs, CI excludes zero in 2/3",
+               "2/3", f'{sum(1 for x in gi if x["excludes_zero"])}/3',
+               all(x["D"] >= 0 for x in gi) and sum(1 for x in gi if x["excludes_zero"]) == 2))
+cn = json.load(open(os.path.join(here, "results", "nhtsa", "control_nhtsa_shared.json")))
+summ = [c for c in cn["contrasts"] if c["contrast"].split(": ")[1].startswith("summary")]
+rc = [c for c in cn["contrasts"] if "remedy vs conseq" in c["contrast"]]
+checks.append(("shared-w2v NHTSA: all 6 summary contrasts Holm-significant",
+               6, sum(1 for c in summ if c["p_holm"] <= 0.05),
+               len(summ) == 6 and all(c["delta"] > 0 and c["p_holm"] <= 0.05 for c in summ)))
+checks.append(("shared-w2v NHTSA: remedy-consequence gap closes (|d| <= 0.03)",
+               "<=0.03", max(abs(c["delta"]) for c in rc),
+               all(abs(c["delta"]) <= 0.03 for c in rc)))
+
 # --- NHTSA purpose hierarchy (v2 = duplicate-confined; 3m = class-vocab mask) ---
 n2 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa2_contrasts.json")))
 sc = [c["delta"] for c in n2 if "summary vs conseq" in c["contrast"]]
