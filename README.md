@@ -6,8 +6,8 @@ reporting", submitted to Computers in Industry.
 
 One case is documented more than once: by different people, at different
 stages of a workflow, for different purposes. The study holds the cases, the
-labels and the split fixed and changes only the record the classifier reads,
-so that the effect of the record can be compared with the effect of the
+labels and the split fixed and changes only the record the classifier reads.
+The effect of the record can then be compared with the effect of the
 representation and of the model on the same footing. Three systems: GE
 Aerospace repair events (customer report, technician report, repair action;
 the label comes from the parts transactions), NASA ASRS safety reports
@@ -63,10 +63,11 @@ cd asrs_pipeline
 bash run_all.sh
 ```
 
-run_all.sh runs the chain in order: corpus_stats.py, build_task.py (the
-Aircraft task with a fixed 80/20 split), the word2vec and fastText training,
-the queue of GloVe, word2vec and fastText models, and finally report.py and
-paired_stats.py, which computes the bootstrap intervals and paired tests.
+run_all.sh runs the chain in order: corpus_stats.py, build_task.py, the
+word2vec and fastText training, the queue of GloVe, word2vec and fastText
+models, then report.py and paired_stats.py. build_task.py builds the Aircraft
+task with a fixed 80/20 split. paired_stats.py computes the bootstrap
+intervals and paired tests.
 run_transformers.sh runs the contextual models and ablations.py the order and
 cap probes. Seeds are fixed and there is no hyperparameter search;
 every constant was set before a result was seen. The full queue is an
@@ -130,12 +131,12 @@ review_budget.py computes error capture against review budget.
 ## nhtsa/: recall campaigns
 
 nhtsa_crawl.py enumerates recall campaigns by campaign number against the
-public API. It waits between requests, can be stopped and resumed, and takes hours. You can skip it:
+public API. It waits between requests, can be stopped and resumed, and takes hours. You can skip it.
 nhtsa_campaigns.jsonl.gz is the snapshot the paper used: 18504 campaigns
-with campaign numbers from 2000 to 2026, retrieved in August 2026, of which
-the 16626 in the sixteen component classes with at least 300 campaigns form
-the task. It ships with its SHA256 in SNAPSHOT_SHA256.txt and the held-out
-campaign numbers in nhtsa_test_campaigns.txt. The scripts read the
+with campaign numbers from 2000 to 2026, retrieved in August 2026. The
+16626 of them in the sixteen component classes with at least 300 campaigns
+form the task. The SHA256 of the snapshot is in SNAPSHOT_SHA256.txt and the
+held-out campaign numbers are in nhtsa_test_campaigns.txt. The scripts read the
 uncompressed file, so gunzip it first and keep the .gz for the hash.
 
 ```
@@ -176,10 +177,9 @@ metrics that were exported: held-out macro-F1 per configuration
 the outcome-term audit and keyword rule (leakage_report.json), the
 duplicate-grouped splits (ge_dup_splits.json), training stability, strata
 and TF-IDF baselines. ge_results.jsonl also carries the rows of the initial
-implementation, the 10-fold means of Table S8 and the transformer trained
-from scratch; that code is the earlier pipeline of the initial study and is
-not part of this package, and the same holds for the training-stability
-summary.
+implementation: the 10-fold means of Table S8 and the transformer trained
+from scratch. That code is the earlier pipeline of the initial study and is
+not part of this package. The same holds for the training-stability summary.
 
 ## Which script produces which table
 
@@ -206,17 +206,17 @@ Numbering follows the submitted manuscript and its supplement.
 ## What was registered and what was post hoc
 
 protocol_maintnet.md is the registered note, written and committed before we
-looked at any public data. The name is historical: MaintNet was the first
-candidate dataset, it failed its own go/no-go, and the addendum in the same
-file registered the ASRS matched records and the NHTSA task. We kept the
-filename so that the registration stays as it was committed.
-CLAIMS_REGISTER_v5.1_controls.md carries the later declarations: the
-shared-representation controls, the RoBERTa contrasts (declared while the
+looked at any public data. The name is the one it was committed under:
+MaintNet was the first candidate dataset, it failed its own go or no-go
+criteria, and the addendum in the same file registered the ASRS matched
+records and the NHTSA task. registrations.md carries the later declarations:
+the shared-representation controls, the RoBERTa contrasts (written while the
 narrative fine-tunes were still training), the five negative redraws, the
-temporal split and the near-duplicate split. Those addenda were written in
-our working folder before each run and copied here afterwards, so the git
-timestamps here are later than the runs. The modification times in our
-working folder are the earlier ones.
+temporal split and the near-duplicate split, each with the criterion fixed in
+advance and the outcome. Those entries were written in our working folder
+before each run and copied here afterwards, so the git timestamps here are
+later than the runs. The modification times in our working folder are the
+earlier ones.
 
 | analysis | dataset | status in the paper |
 |---|---|---|

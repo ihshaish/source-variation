@@ -64,14 +64,16 @@ the paper and is what results/ge/ in the repository root contains.
 
 ## What one run covers
 
-The differential-vocabulary stratification and masking test; the outcome-term
-audit with a keyword baseline and a masked rerun; in-domain fastText and
-word2vec controls matching the public-side pair; convolutional and
-mean-pooling architecture probes; a character n-gram TF-IDF baseline;
-duplicate-grouped, unit, operator and temporal splits for the headline
-configuration; bootstrap confidence intervals, paired randomisation tests,
-per-class tables and confusion matrices; and the cosine-neighbour probe terms
-for the embedding table. Two things are outside the package. The transformer trained from scratch
+- the differential-vocabulary stratification and masking test
+- the outcome-term audit with a keyword baseline and a masked rerun
+- in-domain fastText and word2vec controls matching the public-side pair
+- convolutional and mean-pooling architecture probes
+- a character n-gram TF-IDF baseline
+- duplicate-grouped, unit, operator and temporal splits for the headline configuration
+- bootstrap confidence intervals, paired randomisation tests, per-class tables and confusion matrices
+- the cosine-neighbour probe terms for the embedding table
+
+Two things are outside the package. The transformer trained from scratch
 and the 10-fold means of the initial implementation come from the earlier
 pipeline of the initial study. Transformer fine-tuning was not run on the
 GE records, because pretrained checkpoints cannot be brought into the
