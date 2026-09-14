@@ -130,10 +130,9 @@ holds held-out macro-F1 per configuration (ge_results.jsonl), per-class
 statistics and paired tests (ge_stats.json), the outcome-term audit and
 keyword rule (leakage_report.json), the duplicate-grouped splits
 (ge_dup_splits.json), training stability, strata and TF-IDF baselines.
-ge_results.jsonl also carries rows from the initial implementation (the
-10-fold means of Table S8 and the transformer trained from scratch); that
-code, and the training-stability summary, come from the earlier pipeline of
-the initial study and are not part of this package.
+ge_results.jsonl also carries rows from the initial implementation: the
+10-fold means of Table S8 and the transformer trained from scratch. That
+code and the training-stability summary are not part of this package.
 
 ## Scripts and outputs
 
