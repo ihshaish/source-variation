@@ -1,10 +1,10 @@
 """Go/no-go quantities from crawled campaigns, per the registered criteria:
 >=8 top-level component classes with enough support (scaled to the pilot
 window), median field lengths >=15 tokens."""
-import json,re,statistics,sys
+import json,os,re,statistics,sys
 from collections import Counter
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+")
-rows=[json.loads(l) for l in open('/Users/Hisham/github_page/PhD_peter/views_wip/nhtsa_campaigns.jsonl')]
+rows=[json.loads(l) for l in open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'nhtsa_campaigns.jsonl'))]
 print("campaigns:",len(rows))
 top=Counter((r['Component'] or '').split(':')[0].split(',')[0].strip() for r in rows)
 print("top-level component classes:",len(top))

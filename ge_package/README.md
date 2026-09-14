@@ -20,7 +20,7 @@ exported.
 
 ## Inputs
 
-Three inputs go into `ge_data\`:
+Three inputs go into `ge_data/`:
 
 - `ge_records.csv` — one row per repair record, columns
   `record_id, date, customer, technician, repair, label, unit_serial, operator`.

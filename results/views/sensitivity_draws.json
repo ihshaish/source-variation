@@ -1,0 +1,57 @@
+[
+ {
+  "draw": 1,
+  "n": 89194,
+  "n_test": 17838,
+  "tfidf_narr": 0.8738,
+  "tfidf_syn": 0.8772,
+  "bilstm_narr": 0.8337,
+  "bilstm_syn": 0.8847,
+  "tfidf_delta": 0.0034,
+  "bilstm_delta": 0.051
+ },
+ {
+  "draw": 2,
+  "n": 89194,
+  "n_test": 17838,
+  "tfidf_narr": 0.8772,
+  "tfidf_syn": 0.8772,
+  "bilstm_narr": 0.8763,
+  "bilstm_syn": 0.8852,
+  "tfidf_delta": 0.0,
+  "bilstm_delta": 0.0089
+ },
+ {
+  "draw": 3,
+  "n": 89194,
+  "n_test": 17838,
+  "tfidf_narr": 0.8738,
+  "tfidf_syn": 0.8783,
+  "bilstm_narr": 0.875,
+  "bilstm_syn": 0.8791,
+  "tfidf_delta": 0.0045,
+  "bilstm_delta": 0.0041
+ },
+ {
+  "draw": 4,
+  "n": 89194,
+  "n_test": 17838,
+  "tfidf_narr": 0.8749,
+  "tfidf_syn": 0.8761,
+  "bilstm_narr": 0.8754,
+  "bilstm_syn": 0.8818,
+  "tfidf_delta": 0.0012,
+  "bilstm_delta": 0.0064
+ },
+ {
+  "draw": 5,
+  "n": 89194,
+  "n_test": 17838,
+  "tfidf_narr": 0.874,
+  "tfidf_syn": 0.8757,
+  "bilstm_narr": 0.8732,
+  "bilstm_syn": 0.8822,
+  "tfidf_delta": 0.0017,
+  "bilstm_delta": 0.009
+ }
+]

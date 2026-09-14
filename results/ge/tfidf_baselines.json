@@ -1,0 +1,8 @@
+{
+ "customer_word": 0.3445,
+ "customer_char": 0.3484,
+ "technician_word": 0.7614,
+ "technician_char": 0.7613,
+ "repair_word": 0.8942,
+ "repair_char": 0.9046
+}

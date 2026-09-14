@@ -8,7 +8,7 @@ leaves Claim 3 unchanged under the strictest field-only comparison; otherwise
 the field contrast is scoped to fields-with-their-fitted-representations."""
 import json,os,re
 import numpy as np
-HERE='/Users/Hisham/github_page/PhD_peter/views_wip'
+HERE=os.path.dirname(os.path.abspath(__file__))
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+"); SEED=20260802
 def log(*a): print(*a,flush=True)
 

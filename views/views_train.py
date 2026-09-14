@@ -12,7 +12,7 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+")
 SEED=20260802; PAD,OOV=0,1
 CAPS={'narr':256,'syn':64,'r2':256}
-GLOVE='/Users/Hisham/github_page/PhD_peter/embeddings/glove.6B.200d.txt'
+GLOVE=os.path.join(os.environ.get('EMB_DIR','.'),'glove.6B.200d.txt')
 
 def toks(t,cap): return TOKEN_RE.findall(t.lower())[:cap]
 

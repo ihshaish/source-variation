@@ -1,0 +1,40 @@
+campaigns: 18504
+classes kept: 16 ['AIR BAGS', 'ELECTRICAL SYSTEM', 'ENGINE AND ENGINE COOLING', 'EQUIPMENT', 'EQUIPMENT ADAPTIVE/MOBILITY', 'EXTERIOR LIGHTING', 'FUEL SYSTEM', 'POWER TRAIN', 'SEAT BELTS', 'SEATS', 'SERVICE BRAKES', 'STEERING', 'STRUCTURE', 'SUSPENSION', 'TIRES', 'VISIBILITY']
+near-dup field Summary {'vocab': 16267, 'new_unions': 248}
+near-dup field Consequence {'vocab': 5118, 'new_unions': 1298}
+near-dup field Remedy {'vocab': 12532, 'new_unions': 1498}
+grouping: {'Summary': {'vocab': 16267, 'new_unions': 248}, 'Consequence': {'vocab': 5118, 'new_unions': 1298}, 'Remedy': {'vocab': 12532, 'new_unions': 1498}, 'exact_groups_leg2': 11570, 'groups_neardup': 8526, 'campaigns_in_multi_groups': 9450, 'largest_group': 4418, 'multi_groups': 1350}
+duplicate-union groups: 8526
+task: 16626 test 3325
+{'key': 'nhtsa_summary_tfidf_s0', 'f1': 0.7671}
+{'key': 'nhtsa_conseq_tfidf_s0', 'f1': 0.6946}
+{'key': 'nhtsa_remedy_tfidf_s0', 'f1': 0.6292}
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+{'key': 'nhtsa_summary_bilstm_s0', 'f1': 0.7278}
+{'key': 'nhtsa_summary_bilstm_s1', 'f1': 0.7205}
+{'key': 'nhtsa_summary_bilstm_s2', 'f1': 0.7431}
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+{'key': 'nhtsa_conseq_bilstm_s0', 'f1': 0.6507}
+{'key': 'nhtsa_conseq_bilstm_s1', 'f1': 0.6335}
+{'key': 'nhtsa_conseq_bilstm_s2', 'f1': 0.647}
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+Exception ignored in: 'gensim.models.word2vec_inner.our_dot_float'
+{'key': 'nhtsa_remedy_bilstm_s0', 'f1': 0.5842}
+{'key': 'nhtsa_remedy_bilstm_s1', 'f1': 0.5716}
+{'key': 'nhtsa_remedy_bilstm_s2', 'f1': 0.5963}
+{'contrast': 'tfidf s0: summary vs conseq', 'delta': 0.0725, 'p': 0.0002}
+{'contrast': 'tfidf s0: summary vs remedy', 'delta': 0.138, 'p': 0.0002}
+{'contrast': 'tfidf s0: remedy vs conseq', 'delta': -0.0654, 'p': 0.0002}
+{'contrast': 'bilstm s0: summary vs conseq', 'delta': 0.0772, 'p': 0.0002}
+{'contrast': 'bilstm s1: summary vs conseq', 'delta': 0.087, 'p': 0.0002}
+{'contrast': 'bilstm s2: summary vs conseq', 'delta': 0.0961, 'p': 0.0002}
+{'contrast': 'bilstm s0: summary vs remedy', 'delta': 0.1436, 'p': 0.0002}
+{'contrast': 'bilstm s1: summary vs remedy', 'delta': 0.1489, 'p': 0.0002}
+{'contrast': 'bilstm s2: summary vs remedy', 'delta': 0.1468, 'p': 0.0002}
+{'contrast': 'bilstm s0: remedy vs conseq', 'delta': -0.0665, 'p': 0.0002}
+{'contrast': 'bilstm s1: remedy vs conseq', 'delta': -0.0619, 'p': 0.0002}
+{'contrast': 'bilstm s2: remedy vs conseq', 'delta': -0.0507, 'p': 0.0004}
+runtime_s 427.4
+LEG ND DONE

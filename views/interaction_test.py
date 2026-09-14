@@ -3,12 +3,12 @@
 held-out set, per same-seed w2v-family configuration. Plus: paired
 TF-IDF-vs-BiLSTM per view (ranking-reversal check) and Holm over the
 ensemble family."""
-import json, numpy as np
+import json,os, numpy as np
 from sklearn.metrics import f1_score
 rng=np.random.default_rng(20260802)
 def mf1(y,p): return f1_score(y,(p>=0.5).astype(int),average='macro')
 def load(name): 
-    d=np.load(f'/Users/Hisham/github_page/PhD_peter/views_wip/{name}')
+    d=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),name))
     return d['y'],d['probs']
 out={}
 print("== interaction D = (seq-pool|syn) - (seq-pool|narr), w2v family:",flush=True)
@@ -56,5 +56,5 @@ m=len(ens)
 for i,c in enumerate(sorted(ens,key=lambda c:c["p"])): c["p_holm"]=round(min(1.0,c["p"]*(m-i)),4)
 for c in ens: print(c,flush=True)
 out['ensemble_holm']=ens
-json.dump(out,open('/Users/Hisham/github_page/PhD_peter/views_wip/interaction_test.json','w'),indent=1)
+json.dump(out,open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'interaction_test.json'),'w'),indent=1)
 print("INTERACTION DONE",flush=True)

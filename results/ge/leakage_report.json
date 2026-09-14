@@ -1,0 +1,75 @@
+{
+ "term_audit": {
+  "customer": {
+   "0": {
+    "n": 2488,
+    "contains_class_terms_pct": 0.8,
+    "with_replacement_verb_near_pct": 0.1
+   },
+   "1": {
+    "n": 386,
+    "contains_class_terms_pct": 1.0,
+    "with_replacement_verb_near_pct": 1.0
+   },
+   "2": {
+    "n": 2010,
+    "contains_class_terms_pct": 2.3,
+    "with_replacement_verb_near_pct": 1.3
+   },
+   "3": {
+    "n": 908,
+    "contains_class_terms_pct": 0.0,
+    "with_replacement_verb_near_pct": 0.0
+   }
+  },
+  "technician": {
+   "0": {
+    "n": 2488,
+    "contains_class_terms_pct": 0.3,
+    "with_replacement_verb_near_pct": 0.2
+   },
+   "1": {
+    "n": 386,
+    "contains_class_terms_pct": 72.0,
+    "with_replacement_verb_near_pct": 72.0
+   },
+   "2": {
+    "n": 2010,
+    "contains_class_terms_pct": 71.3,
+    "with_replacement_verb_near_pct": 71.3
+   },
+   "3": {
+    "n": 908,
+    "contains_class_terms_pct": 1.3,
+    "with_replacement_verb_near_pct": 0.0
+   }
+  },
+  "repair": {
+   "0": {
+    "n": 2488,
+    "contains_class_terms_pct": 3.3,
+    "with_replacement_verb_near_pct": 3.0
+   },
+   "1": {
+    "n": 386,
+    "contains_class_terms_pct": 93.8,
+    "with_replacement_verb_near_pct": 93.8
+   },
+   "2": {
+    "n": 2010,
+    "contains_class_terms_pct": 91.0,
+    "with_replacement_verb_near_pct": 91.0
+   },
+   "3": {
+    "n": 908,
+    "contains_class_terms_pct": 7.0,
+    "with_replacement_verb_near_pct": 0.2
+   }
+  }
+ },
+ "keyword_baseline_macro_f1": {
+  "customer": 0.1566,
+  "technician": 0.2328,
+  "repair": 0.2922
+ }
+}

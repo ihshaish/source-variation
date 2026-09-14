@@ -7,9 +7,11 @@ are new."""
 import csv, glob, gzip, json, re
 csv.field_size_limit(10**7)
 
-BASE='/Users/Hisham/github_page/PhD_peter'
+HERE=os.path.dirname(os.path.abspath(__file__))
+# ASRS_DIR: your CSV export; TASK_DIR: where l1_build_task.py wrote the task (defaults to asrs_pipeline/)
+ASRS_DIR=os.environ['ASRS_DIR']; TASK_DIR=os.environ.get('TASK_DIR',os.path.join(os.path.dirname(HERE),'asrs_pipeline'))
 views={}
-for f in sorted(glob.glob(f'{BASE}/data_asrs_v2/*.csv')):
+for f in sorted(glob.glob(os.path.join(ASRS_DIR,'*.csv'))):
     with open(f,errors='replace') as fh:
         r=csv.reader(fh); h1=next(r); h2=next(r)
         cols=[f"{a}/{b}".strip('/') for a,b in zip(h1,h2)]
@@ -24,10 +26,10 @@ for f in sorted(glob.glob(f'{BASE}/data_asrs_v2/*.csv')):
             if acn: views[acn]=(row[isyn].strip(), row[i2].strip())
 print("view records:",len(views))
 
-test=set(json.load(open(f'{BASE}/paper_a_nasa/l1_data_v2/split.json'))['test_acns'])
+test=set(json.load(open(os.path.join(TASK_DIR,'split.json')))['test_acns'])
 n=hit_s=hit_r2=0
-with gzip.open(f'{BASE}/paper_a_nasa/l1_data_v2/task_aircraft.jsonl.gz','rt') as fin, \
-     gzip.open(f'{BASE}/views_wip/views_task.jsonl.gz','wt') as fout:
+with gzip.open(os.path.join(TASK_DIR,'task_aircraft.jsonl.gz'),'rt') as fin, \
+     gzip.open(os.path.join(HERE,'views_task.jsonl.gz'),'wt') as fout:
     for l in fin:
         r=json.loads(l); n+=1
         syn,r2=views.get(r['acn'],('',''))

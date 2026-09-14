@@ -1,0 +1,102 @@
+{
+ "preds_random_repair_avi2vec_bigru_s0.npz": {
+  "overall": 0.8941,
+  "vdelta_pos": 0.8395,
+  "vdelta_neg": 0.7449
+ },
+ "preds_random_repair_avi2vec_bilstm_mask-outcome_terms_s0.npz": {
+  "overall": 0.8385,
+  "vdelta_pos": 0.7803,
+  "vdelta_neg": 0.6005
+ },
+ "preds_random_repair_avi2vec_bilstm_mask-vdelta_s0.npz": {
+  "overall": 0.876,
+  "vdelta_pos": 0.8118,
+  "vdelta_neg": 0.6866
+ },
+ "preds_random_repair_avi2vec_bilstm_s0.npz": {
+  "overall": 0.918,
+  "vdelta_pos": 0.8625,
+  "vdelta_neg": 0.725
+ },
+ "preds_random_repair_avi2vec_transformer_mask-outcome_terms_s0.npz": {
+  "overall": 0.8538,
+  "vdelta_pos": 0.7961,
+  "vdelta_neg": 0.7046
+ },
+ "preds_random_repair_avi2vec_transformer_mask-vdelta_s0.npz": {
+  "overall": 0.848,
+  "vdelta_pos": 0.7914,
+  "vdelta_neg": 0.7118
+ },
+ "preds_random_repair_avi2vec_transformer_s0.npz": {
+  "overall": 0.9047,
+  "vdelta_pos": 0.8617,
+  "vdelta_neg": 0.7618
+ },
+ "preds_random_repair_fasttext_ge_bilstm_s0.npz": {
+  "overall": 0.9007,
+  "vdelta_pos": 0.8452,
+  "vdelta_neg": 0.6025
+ },
+ "preds_random_repair_fasttext_ge_transformer_s0.npz": {
+  "overall": 0.917,
+  "vdelta_pos": 0.8634,
+  "vdelta_neg": 0.7843
+ },
+ "preds_random_repair_glove200_bigru_s0.npz": {
+  "overall": 0.8546,
+  "vdelta_pos": 0.7974,
+  "vdelta_neg": 0.6774
+ },
+ "preds_random_repair_glove200_bilstm_mask-outcome_terms_s0.npz": {
+  "overall": 0.8438,
+  "vdelta_pos": 0.7748,
+  "vdelta_neg": 0.6895
+ },
+ "preds_random_repair_glove200_bilstm_mask-vdelta_s0.npz": {
+  "overall": 0.8494,
+  "vdelta_pos": 0.7852,
+  "vdelta_neg": 0.6576
+ },
+ "preds_random_repair_glove200_bilstm_s0.npz": {
+  "overall": 0.8494,
+  "vdelta_pos": 0.7852,
+  "vdelta_neg": 0.6576
+ },
+ "preds_random_repair_glove200_cnn_s0.npz": {
+  "overall": 0.8804,
+  "vdelta_pos": 0.819,
+  "vdelta_neg": 0.7177
+ },
+ "preds_random_repair_glove200_meanmlp_s0.npz": {
+  "overall": 0.765,
+  "vdelta_pos": 0.6832,
+  "vdelta_neg": 0.653
+ },
+ "preds_random_repair_glove200_transformer_mask-outcome_terms_s0.npz": {
+  "overall": 0.8285,
+  "vdelta_pos": 0.7538,
+  "vdelta_neg": 0.6777
+ },
+ "preds_random_repair_glove200_transformer_mask-vdelta_s0.npz": {
+  "overall": 0.8332,
+  "vdelta_pos": 0.7653,
+  "vdelta_neg": 0.625
+ },
+ "preds_random_repair_glove200_transformer_s0.npz": {
+  "overall": 0.8332,
+  "vdelta_pos": 0.7653,
+  "vdelta_neg": 0.625
+ },
+ "preds_random_repair_w2v_ge_bilstm_s0.npz": {
+  "overall": 0.9022,
+  "vdelta_pos": 0.8439,
+  "vdelta_neg": 0.5734
+ },
+ "preds_random_repair_w2v_ge_transformer_s0.npz": {
+  "overall": 0.8809,
+  "vdelta_pos": 0.8036,
+  "vdelta_neg": 0.7487
+ }
+}

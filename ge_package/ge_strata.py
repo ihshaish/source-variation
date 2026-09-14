@@ -1,5 +1,5 @@
 """P1 — differential-vocabulary stratification + masking test (the registered
-mechanism experiment, FIGURES_TODO item 2 / manuscript Sec 5.4).
+mechanism experiment).
 
 Step 1 (this script, --make-mask): V_delta = vocab(Avi2Vec) minus
 vocab(GloVe-200), intersected with the task vocabulary -> masks/vdelta.txt.

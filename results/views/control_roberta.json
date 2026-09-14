@@ -1,0 +1,126 @@
+{
+ "results": [
+  {
+   "key": "roberta_nhtsa_summary_s0",
+   "f1": 0.8053
+  },
+  {
+   "key": "roberta_nhtsa_summary_s1",
+   "f1": 0.8054
+  },
+  {
+   "key": "roberta_nhtsa_summary_s2",
+   "f1": 0.7913
+  },
+  {
+   "key": "roberta_nhtsa_conseq_s0",
+   "f1": 0.7381
+  },
+  {
+   "key": "roberta_nhtsa_conseq_s1",
+   "f1": 0.7448
+  },
+  {
+   "key": "roberta_nhtsa_conseq_s2",
+   "f1": 0.7418
+  },
+  {
+   "key": "roberta_nhtsa_remedy_s0",
+   "f1": 0.7237
+  },
+  {
+   "key": "roberta_nhtsa_remedy_s1",
+   "f1": 0.7309
+  },
+  {
+   "key": "roberta_nhtsa_remedy_s2",
+   "f1": 0.7129
+  },
+  {
+   "key": "roberta_asrs_syn_s0",
+   "f1": 0.8893
+  },
+  {
+   "key": "roberta_asrs_syn_s1",
+   "f1": 0.8926
+  },
+  {
+   "key": "roberta_asrs_syn_s2",
+   "f1": 0.8871
+  },
+  {
+   "key": "roberta_asrs_narr_s0",
+   "f1": 0.8735
+  },
+  {
+   "key": "roberta_asrs_narr_s1",
+   "f1": 0.8742
+  },
+  {
+   "key": "roberta_asrs_narr_s2",
+   "f1": 0.8756
+  }
+ ],
+ "contrasts": [
+  {
+   "contrast": "roberta s0: syn vs narr",
+   "delta": 0.0158,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta s1: syn vs narr",
+   "delta": 0.0184,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta s2: syn vs narr",
+   "delta": 0.0114,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s0: summary vs conseq",
+   "delta": 0.0673,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s0: summary vs remedy",
+   "delta": 0.0816,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s0: remedy vs conseq",
+   "delta": -0.0143,
+   "p": 0.165
+  },
+  {
+   "contrast": "roberta nhtsa s1: summary vs conseq",
+   "delta": 0.0606,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s1: summary vs remedy",
+   "delta": 0.0746,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s1: remedy vs conseq",
+   "delta": -0.014,
+   "p": 0.1604
+  },
+  {
+   "contrast": "roberta nhtsa s2: summary vs conseq",
+   "delta": 0.0495,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s2: summary vs remedy",
+   "delta": 0.0784,
+   "p": 0.0002
+  },
+  {
+   "contrast": "roberta nhtsa s2: remedy vs conseq",
+   "delta": -0.0289,
+   "p": 0.009
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "Summary": {
+  "vocab": 16267,
+  "new_unions": 248
+ },
+ "Consequence": {
+  "vocab": 5118,
+  "new_unions": 1298
+ },
+ "Remedy": {
+  "vocab": 12532,
+  "new_unions": 1498
+ },
+ "exact_groups_leg2": 11570,
+ "groups_neardup": 8526,
+ "campaigns_in_multi_groups": 9450,
+ "largest_group": 4418,
+ "multi_groups": 1350,
+ "n_task": 16626,
+ "n_test": 3325,
+ "n_test_leg2": 3325
+}

@@ -1,0 +1,67 @@
+{
+ "n_test": 3218,
+ "scores": {
+  "tfidf_summary": 0.7759,
+  "bilstm_summary_s0": 0.7051,
+  "bilstm_summary_s1": 0.7252,
+  "bilstm_summary_s2": 0.7246,
+  "tfidf_conseq": 0.6843,
+  "bilstm_conseq_s0": 0.6583,
+  "bilstm_conseq_s1": 0.6428,
+  "bilstm_conseq_s2": 0.651,
+  "tfidf_remedy": 0.6142,
+  "bilstm_remedy_s0": 0.5887,
+  "bilstm_remedy_s1": 0.6167,
+  "bilstm_remedy_s2": 0.571
+ },
+ "family_holm": [
+  {
+   "contrast": "bilstm s0: summary-conseq",
+   "delta": 0.0468,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "contrast": "bilstm s0: summary-remedy",
+   "delta": 0.1165,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "contrast": "bilstm s1: summary-conseq",
+   "delta": 0.0824,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "contrast": "bilstm s1: summary-remedy",
+   "delta": 0.1085,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "contrast": "bilstm s2: summary-conseq",
+   "delta": 0.0736,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  },
+  {
+   "contrast": "bilstm s2: summary-remedy",
+   "delta": 0.1536,
+   "p": 0.0001,
+   "p_holm": 0.0006
+  }
+ ],
+ "tfidf_descriptive": [
+  {
+   "contrast": "tfidf: summary-conseq",
+   "delta": 0.0915,
+   "p": 0.0001
+  },
+  {
+   "contrast": "tfidf: summary-remedy",
+   "delta": 0.1617,
+   "p": 0.0001
+  }
+ ]
+}

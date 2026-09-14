@@ -1,0 +1,107 @@
+{
+ "DR": [
+  {
+   "seed": 0,
+   "baseline": "bilstm",
+   "D_R": -0.0056,
+   "ci": [
+    -0.0117,
+    0.0005
+   ]
+  },
+  {
+   "seed": 0,
+   "baseline": "tfidf",
+   "D_R": 0.0151,
+   "ci": [
+    0.0094,
+    0.0209
+   ]
+  },
+  {
+   "seed": 1,
+   "baseline": "bilstm",
+   "D_R": 0.0063,
+   "ci": [
+    0.0005,
+    0.0121
+   ]
+  },
+  {
+   "seed": 1,
+   "baseline": "tfidf",
+   "D_R": 0.0177,
+   "ci": [
+    0.0117,
+    0.0236
+   ]
+  },
+  {
+   "seed": 2,
+   "baseline": "bilstm",
+   "D_R": 0.0005,
+   "ci": [
+    -0.0054,
+    0.0061
+   ]
+  },
+  {
+   "seed": 2,
+   "baseline": "tfidf",
+   "D_R": 0.0108,
+   "ci": [
+    0.0049,
+    0.0166
+   ]
+  }
+ ],
+ "nhtsa_gains": [
+  {
+   "seed": 0,
+   "G_summary": 0.0091,
+   "G_remedy": 0.0873,
+   "G_remedy_minus_G_summary": 0.0782,
+   "ci": [
+    0.0542,
+    0.1015
+   ]
+  },
+  {
+   "seed": 1,
+   "G_summary": 0.0058,
+   "G_remedy": 0.0863,
+   "G_remedy_minus_G_summary": 0.0805,
+   "ci": [
+    0.0587,
+    0.1032
+   ]
+  },
+  {
+   "seed": 2,
+   "G_summary": 0.0364,
+   "G_remedy": 0.0867,
+   "G_remedy_minus_G_summary": 0.0503,
+   "ci": [
+    0.0259,
+    0.0757
+   ]
+  }
+ ],
+ "nhtsa_summary_tfidf_vs_roberta": [
+  {
+   "seed": 0,
+   "delta_tfidf_minus_roberta": 0.0104,
+   "p": 0.1776
+  },
+  {
+   "seed": 1,
+   "delta_tfidf_minus_roberta": 0.0103,
+   "p": 0.2108
+  },
+  {
+   "seed": 2,
+   "delta_tfidf_minus_roberta": 0.0245,
+   "p": 0.0036
+  }
+ ]
+}

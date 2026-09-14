@@ -2,7 +2,7 @@
 Trains the mean-pool MLP on both views with GloVe-200 (the fixed embedding
 common to both views), then recomputes D = (seq - pool | syn) - (seq - pool
 | narr) pairing the existing BiLSTM/GloVe-200 predictions with these
-mean-pool runs. Training protocol identical to meanpool_views.py; only the
+mean-pool runs. Training setup identical to meanpool_views.py; only the
 embedding matrix changes. Post-hoc control requested at review; interpretation
 pre-committed: CI excluding zero in all seeds leaves Claim 6 unchanged and
 representation-independent; otherwise the claim is scoped to view pipelines."""
@@ -10,8 +10,8 @@ import gzip,json,re
 import numpy as np, torch, torch.nn as nn
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
-HERE='/Users/Hisham/github_page/PhD_peter/views_wip'
-GLOVE='/Users/Hisham/github_page/PhD_peter/embeddings/glove.6B.200d.txt'
+HERE=os.path.dirname(os.path.abspath(__file__))
+GLOVE=os.path.join(os.environ.get('EMB_DIR','.'),'glove.6B.200d.txt')
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+"); SEED=20260802; PAD,OOV=0,1
 CAPS={'narr':256,'syn':64}
 recs=[json.loads(l) for l in gzip.open(f'{HERE}/views_task.jsonl.gz','rt')]

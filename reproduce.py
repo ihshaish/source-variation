@@ -123,6 +123,76 @@ checks.append(("masked hierarchy: 12/12 Holm-significant, summary>remedy 0.112-0
                "12; 0.112-0.166", f'{sum(1 for c in n3 if c["p_holm"] <= 0.0024)}; {min(msr)}-{max(msr)}',
                all(c["p_holm"] <= 0.0024 for c in n3) and all(0.112 <= round(d, 3) <= 0.166 for d in msr)))
 
+
+# --- GE headline numbers, from the metrics exported out of the secure environment (results/ge/) ---
+ge = [json.loads(l) for l in open(os.path.join(here, "results", "ge", "ge_results.jsonl"))]
+def gemean(field, emb="avi2vec", model="bilstm"):
+    v = [r["test_macro_f1"] for r in ge if r["key"].startswith(f"final_random_{field}_{emb}_{model}_s") and r["key"].count("_") == 5]
+    assert len(v) == 3, (field, emb, model, len(v))
+    return sum(v) / 3
+cust, tech, rep = gemean("customer"), gemean("technician"), gemean("repair")
+claim("GE customer field (Avi2Vec BiLSTM, three-training mean)", 0.327, cust)
+claim("GE technician field", 0.783, tech)
+claim("GE repair-action field", 0.910, rep)
+claim("GE customer -> technician difference", 0.456, tech - cust)
+claim("GE customer -> repair action difference", 0.583, rep - cust)
+claim("GE Avi2Vec vs GloVe-200 on repair action", 0.049, rep - gemean("repair", "glove200"))
+claim("GE sequence vs mean pooling (GloVe-200, repair action)", 0.092, gemean("repair", "glove200") - gemean("repair", "glove200", "meanmlp"))
+lk = json.load(open(os.path.join(here, "results", "ge", "leakage_report.json")))
+claim("GE keyword rule over curated outcome terms, repair action", 0.292, lk["keyword_baseline_macro_f1"]["repair"])
+
+# --- Table 2 seed-averaged differences with joint record-resampling intervals ---
+sa = json.load(open(os.path.join(here, "results", "views", "seedavg_table4.json")))
+claim("Table 2 ASRS synopsis - narrative, BiLSTM mean", 0.015, sa["syn_narr_bilstm"]["mean"])
+claim("Table 2 ASRS synopsis - narrative, RoBERTa mean", 0.015, sa["syn_narr_roberta"]["mean"])
+claim("Table 2 cross-record transfer T, mean", 0.179, sa["dual_raw"]["mean"])
+claim("Table 2 comparable-length subset, mean", 0.010, sa["dual_matched"]["mean"])
+
+# --- five redrawn negative samples (Supplementary Table S14) ---
+sd = json.load(open(os.path.join(here, "results", "views", "sensitivity_draws.json")))
+se = json.load(open(os.path.join(here, "results", "views", "sensitivity_extra.json")))
+means = []
+for d in range(1, 6):
+    v = [r["bilstm_delta"] for r in sd if r["draw"] == d] + [r["bilstm_delta"] for r in se if r["draw"] == d]
+    assert len(v) == 3, d
+    means.append(sum(v) / 3)
+checks.append(("redraws: BiLSTM synopsis advantage positive in every draw, means in 0.008-0.022",
+               "0.008-0.022", f"{round(min(means),3)}-{round(max(means),3)}",
+               all(m > 0 for m in means) and 0.008 <= round(min(means), 3) and round(max(means), 3) <= 0.022))
+
+# --- NHTSA temporal split (Supplementary Table S17) ---
+tt = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa_temporal_tests.json")))
+ts = tt["scores"]
+for f, val in [("summary", 0.718), ("conseq", 0.651), ("remedy", 0.592)]:
+    claim(f"temporal split, BiLSTM {f} mean", val, sum(ts[f"bilstm_{f}_s{s}"] for s in range(3)) / 3)
+fam = tt["family_holm"]
+checks.append(("temporal: all six declared BiLSTM summary contrasts positive and Holm-significant",
+               6, sum(1 for c in fam if c["delta"] > 0 and c["p_holm"] < 0.05),
+               len(fam) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in fam)))
+
+# --- NHTSA near-duplicate grouped split (Supplementary Table S18) ---
+nd = {r["key"]: r["f1"] for r in json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_results.json")))}
+for f, val in [("summary", 0.731), ("conseq", 0.644), ("remedy", 0.584)]:
+    claim(f"near-duplicate split, BiLSTM {f} mean", val, sum(nd[f"nhtsa_{f}_bilstm_s{s}"] for s in range(3)) / 3)
+nc = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_contrasts.json")))
+bil = [c for c in nc if c["contrast"].startswith("bilstm") and "summary vs" in c["contrast"]]
+checks.append(("near-duplicate: all six BiLSTM summary contrasts positive and Holm-significant (registered criterion)",
+               6, sum(1 for c in bil if c["delta"] > 0 and c["p_holm"] < 0.05),
+               len(bil) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in bil)))
+ng = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_grouping.json")))
+claim("near-duplicate grouping: campaigns in multi-member groups", 9450, ng["campaigns_in_multi_groups"], 0)
+claim("near-duplicate grouping: largest transitive group", 4418, ng["largest_group"], 0)
+
+# --- RoBERTa suite (Supplementary Tables S19-S20) ---
+rb = json.load(open(os.path.join(here, "results", "views", "control_roberta.json")))
+rres = {r["key"]: r["f1"] for r in rb["results"]}
+claim("RoBERTa ASRS synopsis - narrative, mean over seeds", 0.015,
+      sum(rres[f"roberta_asrs_syn_s{s}"] - rres[f"roberta_asrs_narr_s{s}"] for s in range(3)) / 3, 0.001)
+pr = json.load(open(os.path.join(here, "results", "views", "control_roberta_prereg.json")))
+dr_tf = [x for x in pr["DR"] if x["baseline"] == "tfidf"]
+checks.append(("RoBERTa D against TF-IDF: every interval excludes zero", 3,
+               sum(1 for x in dr_tf if x["ci"][0] > 0), all(x["ci"][0] > 0 for x in dr_tf)))
+
 bad = 0
 for label, p, s, ok in checks:
     sv = round(s, 4) if isinstance(s, float) else s

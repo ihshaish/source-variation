@@ -1,0 +1,72 @@
+[
+ {
+  "draw": 1,
+  "torch_seed": 101,
+  "bilstm_narr": 0.8746,
+  "bilstm_syn": 0.883,
+  "bilstm_delta": 0.0084
+ },
+ {
+  "draw": 1,
+  "torch_seed": 102,
+  "bilstm_narr": 0.875,
+  "bilstm_syn": 0.8823,
+  "bilstm_delta": 0.0073
+ },
+ {
+  "draw": 2,
+  "torch_seed": 101,
+  "bilstm_narr": 0.8352,
+  "bilstm_syn": 0.8832,
+  "bilstm_delta": 0.048
+ },
+ {
+  "draw": 2,
+  "torch_seed": 102,
+  "bilstm_narr": 0.8768,
+  "bilstm_syn": 0.8805,
+  "bilstm_delta": 0.0037
+ },
+ {
+  "draw": 3,
+  "torch_seed": 101,
+  "bilstm_narr": 0.8753,
+  "bilstm_syn": 0.8826,
+  "bilstm_delta": 0.0073
+ },
+ {
+  "draw": 3,
+  "torch_seed": 102,
+  "bilstm_narr": 0.8654,
+  "bilstm_syn": 0.8838,
+  "bilstm_delta": 0.0184
+ },
+ {
+  "draw": 4,
+  "torch_seed": 101,
+  "bilstm_narr": 0.8749,
+  "bilstm_syn": 0.8808,
+  "bilstm_delta": 0.0059
+ },
+ {
+  "draw": 4,
+  "torch_seed": 102,
+  "bilstm_narr": 0.8703,
+  "bilstm_syn": 0.8823,
+  "bilstm_delta": 0.012
+ },
+ {
+  "draw": 5,
+  "torch_seed": 101,
+  "bilstm_narr": 0.8403,
+  "bilstm_syn": 0.882,
+  "bilstm_delta": 0.0417
+ },
+ {
+  "draw": 5,
+  "torch_seed": 102,
+  "bilstm_narr": 0.8683,
+  "bilstm_syn": 0.8814,
+  "bilstm_delta": 0.0131
+ }
+]

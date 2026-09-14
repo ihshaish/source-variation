@@ -1,6 +1,6 @@
 """L1 data build — NASA ASRS Aircraft binary task per main.tex §3.3/§4.5.
 
-Protocol (verbatim from the paper):
+Setup (as in the paper):
 - 18 primary-problem categories; binary task Aircraft vs rest; blank Primary
   Problem excluded (L0 finding, 8,825 records).
 - Majority-class (rest) undersampled to 50:50 against Aircraft.

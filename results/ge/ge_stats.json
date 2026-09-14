@@ -1,0 +1,1926 @@
+{
+ "configs": {
+  "customer_avi2vec_bilstm": {
+   "test_macro_f1": 0.2742,
+   "ci95": [
+    0.2505,
+    0.2989
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.467,
+     "recall": 0.791,
+     "f1": 0.587,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.368,
+     "recall": 0.254,
+     "f1": 0.3,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.605,
+     "recall": 0.126,
+     "f1": 0.209,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     394,
+     0,
+     97,
+     7
+    ],
+    [
+     38,
+     0,
+     38,
+     1
+    ],
+    [
+     293,
+     0,
+     102,
+     7
+    ],
+    [
+     119,
+     0,
+     40,
+     23
+    ]
+   ]
+  },
+  "customer_avi2vec_transformer": {
+   "test_macro_f1": 0.3375,
+   "ci95": [
+    0.3062,
+    0.3698
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.467,
+     "recall": 0.661,
+     "f1": 0.547,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.235,
+     "recall": 0.052,
+     "f1": 0.085,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.406,
+     "recall": 0.348,
+     "f1": 0.375,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.511,
+     "recall": 0.258,
+     "f1": 0.343,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     329,
+     2,
+     145,
+     22
+    ],
+    [
+     37,
+     4,
+     30,
+     6
+    ],
+    [
+     239,
+     6,
+     140,
+     17
+    ],
+    [
+     100,
+     5,
+     30,
+     47
+    ]
+   ]
+  },
+  "customer_glove200_bilstm": {
+   "test_macro_f1": 0.2797,
+   "ci95": [
+    0.2556,
+    0.3029
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.458,
+     "recall": 0.813,
+     "f1": 0.586,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.377,
+     "recall": 0.144,
+     "f1": 0.209,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.408,
+     "recall": 0.269,
+     "f1": 0.325,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     405,
+     0,
+     60,
+     33
+    ],
+    [
+     50,
+     0,
+     15,
+     12
+    ],
+    [
+     318,
+     0,
+     58,
+     26
+    ],
+    [
+     112,
+     0,
+     21,
+     49
+    ]
+   ]
+  },
+  "customer_glove200_transformer": {
+   "test_macro_f1": 0.2349,
+   "ci95": [
+    0.2145,
+    0.2563
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.466,
+     "recall": 0.307,
+     "f1": 0.37,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.361,
+     "recall": 0.739,
+     "f1": 0.485,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 1.0,
+     "recall": 0.044,
+     "f1": 0.084,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     153,
+     0,
+     345,
+     0
+    ],
+    [
+     19,
+     0,
+     58,
+     0
+    ],
+    [
+     105,
+     0,
+     297,
+     0
+    ],
+    [
+     51,
+     0,
+     123,
+     8
+    ]
+   ]
+  },
+  "repair_avi2vec_bigru": {
+   "test_macro_f1": 0.8941,
+   "ci95": [
+    0.8724,
+    0.9146
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.886,
+     "recall": 0.968,
+     "f1": 0.925,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.944,
+     "recall": 0.87,
+     "f1": 0.905,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.928,
+     "recall": 0.896,
+     "f1": 0.911,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.904,
+     "recall": 0.775,
+     "f1": 0.834,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     482,
+     0,
+     8,
+     8
+    ],
+    [
+     0,
+     67,
+     6,
+     4
+    ],
+    [
+     37,
+     2,
+     360,
+     3
+    ],
+    [
+     25,
+     2,
+     14,
+     141
+    ]
+   ]
+  },
+  "repair_avi2vec_bilstm": {
+   "test_macro_f1": 0.918,
+   "ci95": [
+    0.8976,
+    0.9368
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.916,
+     "recall": 0.982,
+     "f1": 0.948,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.934,
+     "recall": 0.922,
+     "f1": 0.928,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.945,
+     "recall": 0.945,
+     "f1": 0.945,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.952,
+     "recall": 0.769,
+     "f1": 0.851,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     489,
+     1,
+     5,
+     3
+    ],
+    [
+     0,
+     71,
+     2,
+     4
+    ],
+    [
+     21,
+     1,
+     380,
+     0
+    ],
+    [
+     24,
+     3,
+     15,
+     140
+    ]
+   ]
+  },
+  "repair_avi2vec_bilstm_mask-outcome_terms": {
+   "test_macro_f1": 0.8385,
+   "ci95": [
+    0.8106,
+    0.8647
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.826,
+     "recall": 0.936,
+     "f1": 0.878,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.919,
+     "recall": 0.74,
+     "f1": 0.82,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.888,
+     "recall": 0.806,
+     "f1": 0.845,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.845,
+     "recall": 0.78,
+     "f1": 0.811,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     466,
+     2,
+     23,
+     7
+    ],
+    [
+     1,
+     57,
+     3,
+     16
+    ],
+    [
+     75,
+     0,
+     324,
+     3
+    ],
+    [
+     22,
+     3,
+     15,
+     142
+    ]
+   ]
+  },
+  "repair_avi2vec_bilstm_mask-vdelta": {
+   "test_macro_f1": 0.876,
+   "ci95": [
+    0.8518,
+    0.8983
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.88,
+     "recall": 0.93,
+     "f1": 0.904,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.905,
+     "recall": 0.87,
+     "f1": 0.887,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.878,
+     "recall": 0.898,
+     "f1": 0.888,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.919,
+     "recall": 0.747,
+     "f1": 0.824,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     463,
+     0,
+     30,
+     5
+    ],
+    [
+     1,
+     67,
+     3,
+     6
+    ],
+    [
+     40,
+     0,
+     361,
+     1
+    ],
+    [
+     22,
+     7,
+     17,
+     136
+    ]
+   ]
+  },
+  "repair_avi2vec_transformer": {
+   "test_macro_f1": 0.9047,
+   "ci95": [
+    0.8837,
+    0.9238
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.913,
+     "recall": 0.952,
+     "f1": 0.932,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.972,
+     "recall": 0.896,
+     "f1": 0.932,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.952,
+     "recall": 0.94,
+     "f1": 0.946,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.831,
+     "recall": 0.786,
+     "f1": 0.808,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     474,
+     0,
+     2,
+     22
+    ],
+    [
+     0,
+     69,
+     3,
+     5
+    ],
+    [
+     22,
+     0,
+     378,
+     2
+    ],
+    [
+     23,
+     2,
+     14,
+     143
+    ]
+   ]
+  },
+  "repair_avi2vec_transformer_mask-outcome_terms": {
+   "test_macro_f1": 0.8538,
+   "ci95": [
+    0.8264,
+    0.8779
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.867,
+     "recall": 0.906,
+     "f1": 0.886,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.922,
+     "recall": 0.766,
+     "f1": 0.837,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.847,
+     "recall": 0.893,
+     "f1": 0.869,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.907,
+     "recall": 0.753,
+     "f1": 0.823,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     451,
+     1,
+     44,
+     2
+    ],
+    [
+     2,
+     59,
+     5,
+     11
+    ],
+    [
+     42,
+     0,
+     359,
+     1
+    ],
+    [
+     25,
+     4,
+     16,
+     137
+    ]
+   ]
+  },
+  "repair_avi2vec_transformer_mask-vdelta": {
+   "test_macro_f1": 0.848,
+   "ci95": [
+    0.8207,
+    0.8726
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.854,
+     "recall": 0.918,
+     "f1": 0.885,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.938,
+     "recall": 0.779,
+     "f1": 0.851,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.882,
+     "recall": 0.836,
+     "f1": 0.858,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.804,
+     "recall": 0.791,
+     "f1": 0.798,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     457,
+     1,
+     30,
+     10
+    ],
+    [
+     0,
+     60,
+     3,
+     14
+    ],
+    [
+     55,
+     0,
+     336,
+     11
+    ],
+    [
+     23,
+     3,
+     12,
+     144
+    ]
+   ]
+  },
+  "repair_fasttext_ge_bilstm": {
+   "test_macro_f1": 0.9007,
+   "ci95": [
+    0.8788,
+    0.9213
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.906,
+     "recall": 0.964,
+     "f1": 0.934,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.932,
+     "recall": 0.896,
+     "f1": 0.914,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.94,
+     "recall": 0.93,
+     "f1": 0.935,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.885,
+     "recall": 0.764,
+     "f1": 0.82,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     480,
+     0,
+     8,
+     10
+    ],
+    [
+     0,
+     69,
+     1,
+     7
+    ],
+    [
+     27,
+     0,
+     374,
+     1
+    ],
+    [
+     23,
+     5,
+     15,
+     139
+    ]
+   ]
+  },
+  "repair_fasttext_ge_transformer": {
+   "test_macro_f1": 0.917,
+   "ci95": [
+    0.8969,
+    0.9355
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.905,
+     "recall": 0.98,
+     "f1": 0.941,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.972,
+     "recall": 0.909,
+     "f1": 0.94,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.945,
+     "recall": 0.938,
+     "f1": 0.941,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.94,
+     "recall": 0.769,
+     "f1": 0.846,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     488,
+     0,
+     5,
+     5
+    ],
+    [
+     0,
+     70,
+     3,
+     4
+    ],
+    [
+     25,
+     0,
+     377,
+     0
+    ],
+    [
+     26,
+     2,
+     14,
+     140
+    ]
+   ]
+  },
+  "repair_glove200_bigru": {
+   "test_macro_f1": 0.8546,
+   "ci95": [
+    0.8267,
+    0.88
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.871,
+     "recall": 0.922,
+     "f1": 0.896,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.933,
+     "recall": 0.727,
+     "f1": 0.818,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.859,
+     "recall": 0.891,
+     "f1": 0.874,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.903,
+     "recall": 0.769,
+     "f1": 0.831,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     459,
+     1,
+     34,
+     4
+    ],
+    [
+     3,
+     56,
+     7,
+     11
+    ],
+    [
+     44,
+     0,
+     358,
+     0
+    ],
+    [
+     21,
+     3,
+     18,
+     140
+    ]
+   ]
+  },
+  "repair_glove200_bilstm": {
+   "test_macro_f1": 0.8494,
+   "ci95": [
+    0.8232,
+    0.8734
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.874,
+     "recall": 0.849,
+     "f1": 0.862,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.901,
+     "recall": 0.831,
+     "f1": 0.865,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.79,
+     "recall": 0.9,
+     "f1": 0.842,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.932,
+     "recall": 0.747,
+     "f1": 0.829,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     423,
+     1,
+     72,
+     2
+    ],
+    [
+     0,
+     64,
+     5,
+     8
+    ],
+    [
+     40,
+     0,
+     362,
+     0
+    ],
+    [
+     21,
+     6,
+     19,
+     136
+    ]
+   ]
+  },
+  "repair_glove200_bilstm_mask-outcome_terms": {
+   "test_macro_f1": 0.8438,
+   "ci95": [
+    0.8174,
+    0.8683
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.788,
+     "recall": 0.954,
+     "f1": 0.863,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.952,
+     "recall": 0.779,
+     "f1": 0.857,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.894,
+     "recall": 0.756,
+     "f1": 0.819,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.915,
+     "recall": 0.769,
+     "f1": 0.836,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     475,
+     0,
+     20,
+     3
+    ],
+    [
+     4,
+     60,
+     3,
+     10
+    ],
+    [
+     98,
+     0,
+     304,
+     0
+    ],
+    [
+     26,
+     3,
+     13,
+     140
+    ]
+   ]
+  },
+  "repair_glove200_bilstm_mask-vdelta": {
+   "test_macro_f1": 0.8494,
+   "ci95": [
+    0.8236,
+    0.8729
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.874,
+     "recall": 0.849,
+     "f1": 0.862,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.901,
+     "recall": 0.831,
+     "f1": 0.865,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.79,
+     "recall": 0.9,
+     "f1": 0.842,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.932,
+     "recall": 0.747,
+     "f1": 0.829,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     423,
+     1,
+     72,
+     2
+    ],
+    [
+     0,
+     64,
+     5,
+     8
+    ],
+    [
+     40,
+     0,
+     362,
+     0
+    ],
+    [
+     21,
+     6,
+     19,
+     136
+    ]
+   ]
+  },
+  "repair_glove200_cnn": {
+   "test_macro_f1": 0.8804,
+   "ci95": [
+    0.8548,
+    0.9032
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.868,
+     "recall": 0.968,
+     "f1": 0.915,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.94,
+     "recall": 0.818,
+     "f1": 0.875,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.917,
+     "recall": 0.883,
+     "f1": 0.9,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.92,
+     "recall": 0.758,
+     "f1": 0.831,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     482,
+     0,
+     14,
+     2
+    ],
+    [
+     0,
+     63,
+     4,
+     10
+    ],
+    [
+     47,
+     0,
+     355,
+     0
+    ],
+    [
+     26,
+     4,
+     14,
+     138
+    ]
+   ]
+  },
+  "repair_glove200_meanmlp": {
+   "test_macro_f1": 0.765,
+   "ci95": [
+    0.7344,
+    0.792
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.746,
+     "recall": 0.765,
+     "f1": 0.755,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.902,
+     "recall": 0.714,
+     "f1": 0.797,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.663,
+     "recall": 0.729,
+     "f1": 0.694,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.917,
+     "recall": 0.731,
+     "f1": 0.813,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     381,
+     0,
+     115,
+     2
+    ],
+    [
+     1,
+     55,
+     12,
+     9
+    ],
+    [
+     108,
+     0,
+     293,
+     1
+    ],
+    [
+     21,
+     6,
+     22,
+     133
+    ]
+   ]
+  },
+  "repair_glove200_transformer": {
+   "test_macro_f1": 0.8332,
+   "ci95": [
+    0.8059,
+    0.8573
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.847,
+     "recall": 0.831,
+     "f1": 0.839,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.878,
+     "recall": 0.844,
+     "f1": 0.861,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.776,
+     "recall": 0.863,
+     "f1": 0.817,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.906,
+     "recall": 0.742,
+     "f1": 0.816,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     414,
+     1,
+     79,
+     4
+    ],
+    [
+     2,
+     65,
+     0,
+     10
+    ],
+    [
+     54,
+     1,
+     347,
+     0
+    ],
+    [
+     19,
+     7,
+     21,
+     135
+    ]
+   ]
+  },
+  "repair_glove200_transformer_mask-outcome_terms": {
+   "test_macro_f1": 0.8285,
+   "ci95": [
+    0.8003,
+    0.8536
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.817,
+     "recall": 0.89,
+     "f1": 0.852,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.937,
+     "recall": 0.766,
+     "f1": 0.843,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.816,
+     "recall": 0.806,
+     "f1": 0.811,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.873,
+     "recall": 0.753,
+     "f1": 0.808,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     443,
+     1,
+     49,
+     5
+    ],
+    [
+     1,
+     59,
+     4,
+     13
+    ],
+    [
+     76,
+     0,
+     324,
+     2
+    ],
+    [
+     22,
+     3,
+     20,
+     137
+    ]
+   ]
+  },
+  "repair_glove200_transformer_mask-vdelta": {
+   "test_macro_f1": 0.8332,
+   "ci95": [
+    0.807,
+    0.8579
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.847,
+     "recall": 0.831,
+     "f1": 0.839,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.878,
+     "recall": 0.844,
+     "f1": 0.861,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.776,
+     "recall": 0.863,
+     "f1": 0.817,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.906,
+     "recall": 0.742,
+     "f1": 0.816,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     414,
+     1,
+     79,
+     4
+    ],
+    [
+     2,
+     65,
+     0,
+     10
+    ],
+    [
+     54,
+     1,
+     347,
+     0
+    ],
+    [
+     19,
+     7,
+     21,
+     135
+    ]
+   ]
+  },
+  "repair_w2v_ge_bilstm": {
+   "test_macro_f1": 0.9022,
+   "ci95": [
+    0.879,
+    0.9226
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.905,
+     "recall": 0.972,
+     "f1": 0.937,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.932,
+     "recall": 0.883,
+     "f1": 0.907,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.95,
+     "recall": 0.938,
+     "f1": 0.944,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.896,
+     "recall": 0.758,
+     "f1": 0.821,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     484,
+     0,
+     6,
+     8
+    ],
+    [
+     0,
+     68,
+     2,
+     7
+    ],
+    [
+     24,
+     0,
+     377,
+     1
+    ],
+    [
+     27,
+     5,
+     12,
+     138
+    ]
+   ]
+  },
+  "repair_w2v_ge_transformer": {
+   "test_macro_f1": 0.8809,
+   "ci95": [
+    0.8566,
+    0.9029
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.874,
+     "recall": 0.948,
+     "f1": 0.909,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.875,
+     "recall": 0.909,
+     "f1": 0.892,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.91,
+     "recall": 0.9,
+     "f1": 0.905,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.936,
+     "recall": 0.725,
+     "f1": 0.817,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     472,
+     0,
+     20,
+     6
+    ],
+    [
+     1,
+     70,
+     4,
+     2
+    ],
+    [
+     39,
+     0,
+     362,
+     1
+    ],
+    [
+     28,
+     10,
+     12,
+     132
+    ]
+   ]
+  },
+  "sequential_avi2vec_bilstm": {
+   "test_macro_f1": 0.8633,
+   "ci95": [
+    0.8358,
+    0.888
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.899,
+     "recall": 0.948,
+     "f1": 0.923,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.802,
+     "recall": 0.844,
+     "f1": 0.823,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.902,
+     "recall": 0.918,
+     "f1": 0.91,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.903,
+     "recall": 0.714,
+     "f1": 0.798,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     472,
+     0,
+     19,
+     7
+    ],
+    [
+     1,
+     65,
+     4,
+     7
+    ],
+    [
+     31,
+     2,
+     369,
+     0
+    ],
+    [
+     21,
+     14,
+     17,
+     130
+    ]
+   ]
+  },
+  "sequential_avi2vec_transformer": {
+   "test_macro_f1": 0.9115,
+   "ci95": [
+    0.8907,
+    0.9306
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.915,
+     "recall": 0.97,
+     "f1": 0.942,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.933,
+     "recall": 0.909,
+     "f1": 0.921,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.936,
+     "recall": 0.953,
+     "f1": 0.945,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.939,
+     "recall": 0.758,
+     "f1": 0.839,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     483,
+     0,
+     9,
+     6
+    ],
+    [
+     0,
+     70,
+     5,
+     2
+    ],
+    [
+     18,
+     0,
+     383,
+     1
+    ],
+    [
+     27,
+     5,
+     12,
+     138
+    ]
+   ]
+  },
+  "technician_avi2vec_bilstm": {
+   "test_macro_f1": 0.7658,
+   "ci95": [
+    0.7298,
+    0.7986
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.847,
+     "recall": 0.966,
+     "f1": 0.902,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.714,
+     "recall": 0.455,
+     "f1": 0.556,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.846,
+     "recall": 0.858,
+     "f1": 0.852,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.888,
+     "recall": 0.654,
+     "f1": 0.753,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     481,
+     1,
+     7,
+     9
+    ],
+    [
+     4,
+     35,
+     34,
+     4
+    ],
+    [
+     46,
+     9,
+     345,
+     2
+    ],
+    [
+     37,
+     4,
+     22,
+     119
+    ]
+   ]
+  },
+  "technician_avi2vec_transformer": {
+   "test_macro_f1": 0.7843,
+   "ci95": [
+    0.7504,
+    0.8146
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.839,
+     "recall": 0.952,
+     "f1": 0.892,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.734,
+     "recall": 0.61,
+     "f1": 0.667,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.847,
+     "recall": 0.841,
+     "f1": 0.844,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.878,
+     "recall": 0.632,
+     "f1": 0.735,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     474,
+     1,
+     17,
+     6
+    ],
+    [
+     2,
+     47,
+     23,
+     5
+    ],
+    [
+     49,
+     10,
+     338,
+     5
+    ],
+    [
+     40,
+     6,
+     21,
+     115
+    ]
+   ]
+  },
+  "technician_glove200_bilstm": {
+   "test_macro_f1": 0.7809,
+   "ci95": [
+    0.7465,
+    0.8119
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.829,
+     "recall": 0.962,
+     "f1": 0.89,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.759,
+     "recall": 0.571,
+     "f1": 0.652,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.874,
+     "recall": 0.826,
+     "f1": 0.849,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.832,
+     "recall": 0.654,
+     "f1": 0.732,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     479,
+     1,
+     5,
+     13
+    ],
+    [
+     2,
+     44,
+     23,
+     8
+    ],
+    [
+     58,
+     9,
+     332,
+     3
+    ],
+    [
+     39,
+     4,
+     20,
+     119
+    ]
+   ]
+  },
+  "technician_glove200_transformer": {
+   "test_macro_f1": 0.7422,
+   "ci95": [
+    0.7064,
+    0.7754
+   ],
+   "per_class": [
+    {
+     "class": 0,
+     "precision": 0.843,
+     "recall": 0.894,
+     "f1": 0.867,
+     "support": 498
+    },
+    {
+     "class": 1,
+     "precision": 0.72,
+     "recall": 0.468,
+     "f1": 0.567,
+     "support": 77
+    },
+    {
+     "class": 2,
+     "precision": 0.817,
+     "recall": 0.853,
+     "f1": 0.835,
+     "support": 402
+    },
+    {
+     "class": 3,
+     "precision": 0.745,
+     "recall": 0.659,
+     "f1": 0.7,
+     "support": 182
+    }
+   ],
+   "confusion": [
+    [
+     445,
+     2,
+     22,
+     29
+    ],
+    [
+     3,
+     36,
+     32,
+     6
+    ],
+    [
+     45,
+     8,
+     343,
+     6
+    ],
+    [
+     35,
+     4,
+     23,
+     120
+    ]
+   ]
+  }
+ },
+ "contrasts": [
+  {
+   "contrast": "customer_avi2vec_bilstm vs customer_glove200_bilstm",
+   "delta": -0.0055,
+   "p": 0.6538,
+   "p_holm": 0.6538
+  },
+  {
+   "contrast": "repair_avi2vec_bilstm vs repair_fasttext_ge_bilstm",
+   "delta": 0.0173,
+   "p": 0.0417,
+   "p_holm": 0.0834
+  },
+  {
+   "contrast": "repair_avi2vec_bilstm vs repair_glove200_bilstm",
+   "delta": 0.0687,
+   "p": 0.0001,
+   "p_holm": 0.0003
+  },
+  {
+   "contrast": "repair_avi2vec_bilstm vs repair_w2v_ge_bilstm",
+   "delta": 0.0158,
+   "p": 0.0741,
+   "p_holm": 0.0834
+  },
+  {
+   "contrast": "technician_avi2vec_bilstm vs technician_glove200_bilstm",
+   "delta": -0.0151,
+   "p": 0.3407,
+   "p_holm": 0.3407
+  }
+ ]
+}

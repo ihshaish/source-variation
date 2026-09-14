@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.log
+!results/nhtsa/neardup/nhtsa_neardup.log
+*.npz
+!results/nhtsa/neardup/*.npz
+*.kv
+*_DONE
+QUEUE_DONE
+LEGB_DONE
+views/views_task.jsonl.gz
+views/pool_views.jsonl.gz
+nhtsa/nhtsa_campaigns.jsonl
+.DS_Store
