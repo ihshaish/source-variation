@@ -4,19 +4,14 @@ Code and results for "The record is part of the task: matched-record
 evaluation of text classifiers across maintenance, safety and recall
 reporting", submitted to Computers in Industry.
 
-One case is documented more than once: by different people, at different
-stages of a workflow, for different purposes. The study holds the cases, the
-labels and the split fixed and changes only the record the classifier reads.
-The effect of the record can then be compared with the effect of the
-representation and of the model on the same footing. Three systems: GE
-Aerospace repair events (customer report, technician report, repair action;
-the label comes from the parts transactions), NASA ASRS safety reports
-(reporter narrative, supplemental narrative, analyst synopsis) and NHTSA
-recall campaigns (defect summary, consequence, remedy).
+The study compares classifiers that read different records of the same
+cases, with the cases, labels and split held fixed. Three systems: GE
+Aerospace repair events (customer report, technician report, repair
+action), NASA ASRS safety reports (reporter narrative, supplemental
+narrative, analyst synopsis) and NHTSA recall campaigns (defect summary,
+consequence, remedy).
 
-If a number here disagrees with a number in the paper, or something below
-does not run for you, write to us: hisham.ihshaish@uwe.ac.uk or
-peter.mayhew@geaerospace.com.
+Questions and mismatches: hisham.ihshaish@uwe.ac.uk, peter.mayhew@geaerospace.com.
 
 ## Checking the paper's numbers
 
@@ -24,37 +19,33 @@ peter.mayhew@geaerospace.com.
 python3 reproduce.py
 ```
 
-This reads results/ and prints every headline number in the paper next to
-the value stored here, 54 checks in all. It needs no training and no
-downloads. A MISMATCH line means something has drifted; tell us.
+Reads results/ and prints each headline number of the paper next to the
+stored value, 54 checks. No training, no downloads.
 
-## What runs and what does not
+## What runs here
 
-The ASRS and NHTSA sides run from a fresh clone plus two downloads: the ASRS
-export and the GloVe vectors. The NHTSA snapshot ships in the repository.
-The GE side cannot run outside GE: the records are proprietary and cannot be
-shared, and the same holds for the Avi2Vec vectors trained on them. What
-ships from GE is the code that ran there (ge_package/), a self-test that
-drives the whole chain on invented records, and the metrics that were
-exported (results/ge/). Nothing under results/ contains record text.
+- asrs_pipeline/ and records/ run from a fresh clone plus the ASRS export
+  and the GloVe vectors, which you download yourself.
+- nhtsa/ runs from the snapshot shipped in the repository.
+- ge_package/ ran inside GE Aerospace. The records are proprietary and
+  cannot be shared, and so are the Avi2Vec vectors trained on them. The
+  package ships with a self-test on invented records. results/ge/ holds the
+  exported metrics. Nothing under results/ contains record text.
 
-## The NASA data
+## ASRS data
 
-The ASRS database is public: https://asrs.arc.nasa.gov/search/database.html.
-Search the date range you want, export the results as CSV and put the files
-in one directory. The paper uses reports through 2021 for the task and the
-full 1988 to 2026 export for corpus statistics. The export interface caps
-the number of results per query, so the export is done year by year. Then:
+Export from https://asrs.arc.nasa.gov/search/database.html as CSV, year by
+year (the interface caps results per query), into one directory. The task
+uses reports through 2021; the corpus statistics use the full export. Then:
 
 ```
 export ASRS_DIR=/path/to/your/csvs
+export EMB_DIR=/path/to/glove      # glove.6B.*.txt from nlp.stanford.edu/projects/glove
 cd asrs_pipeline
-python3 corpus_stats.py
+python3 corpus_stats.py            # prints your corpus counts next to ours
 ```
 
-This prints the corpus counts next to ours. Inside the task window they
-agree to within 0.1%. Reports filed after our export date differ outside the
-window, as expected.
+Within the task window the counts agree to within 0.1%.
 
 ## asrs_pipeline/: the Aircraft task
 
@@ -63,125 +54,92 @@ cd asrs_pipeline
 bash run_all.sh
 ```
 
-run_all.sh runs the chain in order: corpus_stats.py, build_task.py, the
-word2vec and fastText training, the queue of GloVe, word2vec and fastText
-models, then report.py and paired_stats.py. build_task.py builds the Aircraft
-task with a fixed 80/20 split. paired_stats.py computes the bootstrap
-intervals and paired tests.
-run_transformers.sh runs the contextual models and ablations.py the order and
-cap probes. Seeds are fixed and there is no hyperparameter search;
-every constant was set before a result was seen. The full queue is an
-overnight job on one GPU. train.py and train_transformers.py take --smoke for a
-two-minute run; do that before leaving the queue overnight. GloVe vectors download from
-nlp.stanford.edu/projects/glove and the scripts look for them in EMB_DIR.
-paired_stats.py is the only place statistics happen on this side; everything
-upstream writes per-record predictions, so the statistics rerun without
-retraining.
+Runs, in order: corpus_stats.py, build_task.py (Aircraft task, fixed 80/20
+split), train_word2vec.py, train_fasttext.py, run_queue.py and
+run_queue_architectures.py (the GloVe, word2vec and fastText models),
+report.py and paired_stats.py (bootstrap intervals and paired tests).
+run_transformers.sh runs the contextual models; ablations.py runs the
+token-order and 512-token-cap probes. Seeds are fixed; there is no
+hyperparameter search. The full queue takes one GPU overnight. train.py and
+train_transformers.py take --smoke for a two-minute run. Trainers write
+per-record predictions; paired_stats.py is the only statistics step, so it
+reruns without retraining.
 
 ## records/: the matched ASRS records
 
-Same Aircraft task, same cases, same split. build_records.py joins the
-analyst synopsis and the supplemental narrative to the task by report number
-from the same CSV export; it needs ASRS_DIR and finds the task in
-asrs_pipeline/data. Then:
+Same task, cases and split. Needs ASRS_DIR and the task built by
+asrs_pipeline/build_task.py.
 
 ```
 cd records
-python3 build_records.py
-bash run_records.sh
-python3 echo_mask.py
-python3 matrix_2x2.py
-python3 records_meanpool.py
-python3 interaction_test.py
-python3 control_glove_D.py
-python3 records_charngram.py
-python3 dual_report_length.py
-python3 dual_matched.py
-python3 review_budget.py
+python3 build_records.py           # joins synopsis and supplemental narrative to the task
+bash run_records.sh                # word2vec per record, BiLSTM finals, TF-IDF, paired statistics
+python3 echo_mask.py               # category-vocabulary mask on both records
+python3 matrix_2x2.py              # train and test across the two reporter narratives
+python3 records_meanpool.py        # mean-pooling comparator
+python3 interaction_test.py        # record-by-model interaction D
+python3 control_glove_D.py         # D with one embedding shared across records
+python3 records_charngram.py       # character n-gram baseline
+python3 dual_report_length.py      # dual-report contrast by length of the second narrative
+python3 dual_matched.py            # comparable-length rows per training
+python3 review_budget.py           # error capture against review budget
+python3 sensitivity_draws.py 0         # builds the negative-draw pool from the export
+python3 sensitivity_draws.py <draw 1..5>          # one redrawn negative sample, one training
+python3 sensitivity_extra.py <draw 1..5> <seed>   # trainings 2 and 3 per draw
+python3 control_roberta.py         # RoBERTa: NHTSA fields and the synopsis, three seeds
+python3 control_roberta_narr.py <seed> # RoBERTa: one narrative fine-tune per process
+python3 control_roberta_stats.py   # paired contrasts over the RoBERTa predictions
+python3 control_roberta_declared.py    # the three RoBERTa contrasts declared in advance
+python3 seedavg_and_threshold.py   # Table 2 rows; needs the RoBERTa and NHTSA runs
 ```
 
-run_records.sh trains word2vec per record, the BiLSTM finals, the TF-IDF
-baselines and runs the paired statistics. echo_mask.py applies the
-category-vocabulary mask to both records. matrix_2x2.py trains and tests
-across the two reporter narratives. records_meanpool.py is the mean-pooling
-comparator, and interaction_test.py computes the record-by-model interaction
-D from its predictions and the BiLSTM's. control_glove_D.py computes D again
-with one embedding shared across the two records. records_charngram.py is
-the character n-gram baseline. The synopsis is the analyst's 19-token rewrite
-of a 178-token narrative, and the sequence models score higher on it.
-records_task.jsonl.gz (53 MB) is not shipped; build_records.py rebuilds it
-from your export in a minute.
-
-Two further ASRS runs live here. sensitivity_draws.py and
-sensitivity_extra.py redraw the negative class five times (seeds 101 to 105)
-and retrain the narrative and synopsis models on each draw. The pool file
-they build from the export (107 MB) is not shipped either. The RoBERTa
-fine-tunes are control_roberta.py (the NHTSA fields and the synopsis) and
-control_roberta_narr.py (one narrative fine-tune per process, because twelve
-in one process ran out of memory on a 16 GB machine). control_roberta_stats.py
-runs the paired contrasts over the stored predictions and
-control_roberta_declared.py the three contrasts we declared before the ASRS
-runs finished. Once the RoBERTa and NHTSA runs exist, seedavg_and_threshold.py
-produces the rows of Table 2: differences averaged over trainings with joint
-record-resampling intervals. Three small scripts read the stored predictions only:
-dual_report_length.py bins the dual-report cases by the length of the second
-narrative, dual_matched.py gives the comparable-length rows per training, and
-review_budget.py computes error capture against review budget.
+records_task.jsonl.gz (53 MB) and the negative-draw pool (107 MB) are not
+shipped; build_records.py and sensitivity_draws.py rebuild them from the
+export. control_roberta_narr.py runs one fine-tune per process because
+twelve in one process exceed 16 GB of memory.
 
 ## nhtsa/: recall campaigns
 
-nhtsa_crawl.py enumerates recall campaigns by campaign number against the
-public API. It waits between requests, can be stopped and resumed, and takes hours. You can skip it.
-nhtsa_campaigns.jsonl.gz is the snapshot the paper used: 18504 campaigns
-with campaign numbers from 2000 to 2026, retrieved in August 2026. The
-16626 of them in the sixteen component classes with at least 300 campaigns
-form the task. The SHA256 of the snapshot is in SNAPSHOT_SHA256.txt and the
-held-out campaign numbers are in nhtsa_test_campaigns.txt. The scripts read the
-uncompressed file, so gunzip it first and keep the .gz for the hash.
+nhtsa_campaigns.jsonl.gz is the snapshot used: 18504 campaigns with
+campaign numbers 2000 to 2026, retrieved August 2026; SHA256 in
+SNAPSHOT_SHA256.txt; held-out campaign numbers in nhtsa_test_campaigns.txt.
+The 16626 campaigns in the sixteen component classes with at least 300
+campaigns form the task. nhtsa_crawl.py rebuilds the snapshot from the
+public API (hours; resumable).
 
 ```
 cd nhtsa
 gunzip -k nhtsa_campaigns.jsonl.gz
-python3 nhtsa_task.py
-python3 nhtsa_mask.py
-python3 control_nhtsa_shared.py
-python3 nhtsa_temporal.py
-python3 nhtsa_temporal_preds.py
-python3 nhtsa_neardup.py
-python3 tabulate_neardup.py
+python3 nhtsa_task.py              # 16-class task, exact duplicates confined to one side, TF-IDF and BiLSTM per field
+python3 nhtsa_mask.py              # the same with class-label tokens masked
+python3 control_nhtsa_shared.py    # one embedding shared across the three fields
+python3 nhtsa_temporal.py          # train 2000-2021, test 2022-2026
+python3 nhtsa_temporal_preds.py    # the temporal run with predictions kept, for the Holm-corrected contrasts
+python3 nhtsa_neardup.py           # near-duplicate grouped split, Jaccard >= 0.80 in any field
+python3 tabulate_neardup.py        # prints the near-duplicate tables and checks the criterion
 ```
 
-nhtsa_task.py builds the 16-class task, confines exact duplicates to one side
-of the split and trains TF-IDF and BiLSTM classifiers per field.
-nhtsa_mask.py repeats this with every class-label token masked.
-control_nhtsa_shared.py shares one embedding across the three fields.
-nhtsa_temporal.py trains on campaigns filed 2000 to 2021 and tests on 2022
-to 2026; nhtsa_temporal_preds.py is the same run with predictions kept, for
-the Holm-corrected contrasts. nhtsa_neardup.py groups campaigns whose text in
-any field overlaps at Jaccard 0.80 or more and confines each group to one
-side. Its largest group has 4418 campaigns, a chain of generic consequence
-and remedy sentences. The ordering of the fields holds under that split; the
-absolute scores do not carry over, because the held-out campaigns are a
-different sample. tabulate_neardup.py prints the tables and checks the
-criterion fixed before the run.
+The near-duplicate split's largest group has 4418 campaigns. Its held-out
+set is a different sample from the reference split, so compare field
+orderings, not absolute scores.
 
 ## ge_package/
 
-The code that ran inside GE Aerospace on the proprietary records.
-ge_selftest.py drives the whole pipeline on invented data: the same code
-paths, fake records, useful for checking the logic and not the numbers.
-Field statistics, the coverage bound, the masking conditions, the alternative
-splits and the keyword baselines all live here. results/ge/ holds the
-metrics that were exported: held-out macro-F1 per configuration
-(ge_results.jsonl), per-class statistics and paired tests (ge_stats.json),
-the outcome-term audit and keyword rule (leakage_report.json), the
-duplicate-grouped splits (ge_dup_splits.json), training stability, strata
-and TF-IDF baselines. ge_results.jsonl also carries the rows of the initial
-implementation: the 10-fold means of Table S8 and the transformer trained
-from scratch. That code is the earlier pipeline of the initial study and is
-not part of this package. The same holds for the training-stability summary.
+The code run inside GE Aerospace; see ge_package/README.md. results/ge/
+holds held-out macro-F1 per configuration (ge_results.jsonl), per-class
+statistics and paired tests (ge_stats.json), the outcome-term audit and
+keyword rule (leakage_report.json), the duplicate-grouped splits
+(ge_dup_splits.json), training stability, strata and TF-IDF baselines.
+ge_results.jsonl also carries rows from the initial implementation (the
+10-fold means of Table S8 and the transformer trained from scratch); that
+code, and the training-stability summary, come from the earlier pipeline of
+the initial study and are not part of this package.
 
-## Which script produces which table
+## Scripts and outputs
+
+Scripts write their JSON next to themselves; the copies under results/ are
+what the paper used. Prediction files (.npz) are gitignored except the
+near-duplicate set under results/nhtsa/neardup/.
 
 Numbering follows the submitted manuscript and its supplement.
 
@@ -203,20 +161,15 @@ Numbering follows the submitted manuscript and its supplement.
 | Table S21, Figure S6 | records/review_budget.py |
 | Section S1 record statistics | records/dual_report_length.py |
 
-## What was registered and what was post hoc
+## Registration
 
-protocol_maintnet.md is the registered note, written and committed before we
-looked at any public data. The name is the one it was committed under:
-MaintNet was the first candidate dataset, it failed its own go or no-go
-criteria, and the addendum in the same file registered the ASRS matched
-records and the NHTSA task. registrations.md carries the later declarations:
-the shared-representation controls, the RoBERTa contrasts (written while the
-narrative fine-tunes were still training), the five negative redraws, the
-temporal split and the near-duplicate split, each with the criterion fixed in
-advance and the outcome. Those entries were written in our working folder
-before each run and copied here afterwards, so the git timestamps here are
-later than the runs. The modification times in our working folder are the
-earlier ones.
+protocol_maintnet.md was written and committed before any public data was
+downloaded. MaintNet failed its go or no-go criteria; the addendum in the
+same file registered the ASRS matched records and the NHTSA task.
+registrations.md records the analyses declared later, each with the date
+written, the criterion fixed in advance and the outcome. Those entries were
+written in our working folder before each run and copied here afterwards;
+the git timestamps of this repository are later than the runs.
 
 | analysis | dataset | status in the paper |
 |---|---|---|
@@ -239,29 +192,18 @@ earlier ones.
 | near-duplicate grouped split | NHTSA | prospective extension |
 | MaintNet phase 0 | MaintNet | registered, no-go |
 
-The labels are those of the paper's supplement (Table S22), which also
-lists the GE analyses. The preplanned contrasts carry the confirmatory
-weight; the rest explains them.
+The labels are those of Table S22 in the supplement.
 
-## What does not reproduce bit for bit
+## Reproducibility limits
 
-Training on Apple MPS is not bit-reproducible from run to run. The temporal
-split was executed twice, once without saving predictions, and the two
-executions agree in direction everywhere and differ in the third decimal.
-The NHTSA crawl is a snapshot of a database that is updated continually,
-which is why the snapshot and its hash ship. The ASRS export grows month by
-month; inside the task window it reproduces our counts to within 0.1%.
-Nothing in the paper's inference depends on a training run being
-bit-identical: intervals come from resampling the held-out cases, and ranges
-over trainings are reported separately.
-
-## Notes
-
-The queue scripts are plain shell loops, one job per GPU. The records and
-NHTSA queues run on a laptop with MPS or CPU. Prediction files (.npz) are
-written next to the scripts and are ignored by git, except the small
-near-duplicate set under results/nhtsa/neardup/, which tabulate_neardup.py
-reads.
+Training on Apple MPS is not bit-reproducible. The temporal split was run
+twice, the first time without saving predictions; the two runs agree in
+direction on every contrast and differ in the third decimal. The NHTSA
+snapshot and its hash ship because the database is updated continually.
+The ASRS export grows month by month; within the task window it reproduces
+our counts to within 0.1%. Intervals come from resampling the held-out
+cases, and ranges over trainings are reported separately, so no inference
+in the paper depends on a run being bit-identical.
 
 ## How to cite
 
