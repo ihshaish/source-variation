@@ -3,14 +3,14 @@
 Holm-corrected contrasts (register 2026-08-27 clarification b: six-contrast
 family = {summary-consequence, summary-remedy} x 3 trainings) can be computed.
 Identical setup and seeds to nhtsa_temporal.py; adds prediction persistence
-and the paired approximate-randomisation tests in the views_stats.py convention
+and the paired approximate-randomisation tests in the records_stats.py convention
 (p=(cnt+1)/(n+1), n=10000, Holm within the declared family). TF-IDF contrasts
 are reported descriptively outside the family, per the declaration."""
 import json,os
 import numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__))
 ROOT=os.path.dirname(HERE)
-VIEWS=os.path.join(ROOT,'views'); NHTSA=os.path.join(ROOT,'nhtsa'); RESULTS=os.path.join(ROOT,'results')
+VIEWS=os.path.join(ROOT,'records'); NHTSA=os.path.join(ROOT,'nhtsa'); RESULTS=os.path.join(ROOT,'results')
 import sys; sys.path.insert(0,HERE)
 from nhtsa_temporal import build,TOKEN_RE,PAD,OOV,CAP
 

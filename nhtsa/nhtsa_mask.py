@@ -1,12 +1,10 @@
-# Feeds Supplementary Table S18: the near-duplicate grouped split (token-set Jaccard >= 0.80 in any field). Registered as addendum v5.6 before it ran.
-"""Near-duplicate grouped-split sensitivity (registered v5.6, 2026-09-13): leg-2 copy with the
-split grouping extended to per-field token-set Jaccard >= 0.80. Leg B end to end, from crawled campaigns: task build (top-level component
+"""Leg B end to end, from crawled campaigns: task build (top-level component
 classes with 300+ support, exact-duplicate summaries confined to one side,
 80/20 split by campaign), per-view word2vec, TF-IDF and BiLSTM per view,
 three seeds, paired stats between views. Registered design."""
 import glob,json,os,re,sys,time
-T0=time.time()
 import numpy as np
+MASK_MODE=True
 HERE=os.path.dirname(os.path.abspath(__file__))
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+"); SEED=20260802
 def log(*a): print(*a,flush=True)
@@ -23,10 +21,15 @@ cnt=Counter(top(r['Component']) for r in camps)
 classes=sorted([k for k,v in cnt.items() if v>=300 and k])
 log("classes kept:",len(classes),classes)
 lab={k:i for i,k in enumerate(classes)}
+MASK=set()
+for c in classes: MASK.update(re.findall(r'[a-z]+', c.lower()))
+print("mask tokens:",sorted(MASK))
+def strip_mask(s):
+    return ' '.join(w for w in re.split(r'(\W+)', s or '') if w.lower() not in MASK)
 data=[r for r in camps if top(r['Component']) in lab]
-# --- near-duplicate grouping (registered v5.6): leg-2 exact-key unions, then
-# --- per-field token-set Jaccard >= 0.80 unions; everything downstream unchanged.
+# exact-duplicate summaries to one side via grouping key
 rng=np.random.default_rng(SEED)
+# union-find over duplicate groups defined by ANY of the three fields
 parent=list(range(len(data)))
 def find(i):
     while parent[i]!=i: parent[i]=parent[parent[i]]; i=parent[i]
@@ -41,42 +44,8 @@ for field in ('Summary','Consequence','Remedy'):
         if not k: continue
         if k in first: union(first[k],i)
         else: first[k]=i
-exact_groups=len(set(find(i) for i in range(len(data))))
-import scipy.sparse as sp
-JACC=0.80; near_pairs=0; gstats={}
-for field in ('Summary','Consequence','Remedy'):
-    toksets=[set(TOKEN_RE.findall((r[field] or '').lower())) for r in data]
-    vocab={}
-    rows_,cols_=[],[]
-    for i,ts in enumerate(toksets):
-        for t in ts:
-            rows_.append(i); cols_.append(vocab.setdefault(t,len(vocab)))
-    X=sp.csr_matrix((np.ones(len(rows_),np.int32),(rows_,cols_)),shape=(len(data),len(vocab)))
-    sizes=np.asarray(X.sum(1)).ravel()
-    XT=X.T.tocsr(); fpairs=0
-    B=1500
-    for b in range(0,len(data),B):
-        inter=(X[b:b+B]@XT).toarray()
-        sa=sizes[b:b+B][:,None]; sb=sizes[None,:]
-        with np.errstate(divide='ignore',invalid='ignore'):
-            jac=inter/(sa+sb-inter)
-        jac[(sa==0)|(sb==0)]=0.0
-        ii,jj=np.nonzero(jac>=JACC)
-        for i,j in zip(ii,jj):
-            gi=b+i
-            if gi<j:
-                if find(gi)!=find(j): fpairs+=1
-                union(gi,j)
-    gstats[field]={"vocab":len(vocab),"new_unions":fpairs}
-    near_pairs+=fpairs
-    log("near-dup field",field,gstats[field])
 groups={}
 for i,r in enumerate(data): groups.setdefault(find(i),[]).append(r)
-multi=[g for g in groups.values() if len(g)>1]
-gstats["exact_groups_leg2"]=exact_groups; gstats["groups_neardup"]=len(groups)
-gstats["campaigns_in_multi_groups"]=int(sum(len(g) for g in multi)); gstats["largest_group"]=int(max(len(g) for g in groups.values()))
-gstats["multi_groups"]=len(multi)
-log("grouping:",gstats)
 gkeys=list(groups); rng.shuffle(gkeys)
 ntest=int(0.2*len(data)); test=set(); c=0
 for k in gkeys:
@@ -84,14 +53,10 @@ for k in gkeys:
     for r in groups[k]: test.add(r['NHTSACampaignNumber'])
     c+=len(groups[k])
 print("duplicate-union groups:",len(groups))
-OUT=os.path.join(os.path.dirname(HERE),"results","nhtsa","neardup"); os.makedirs(OUT,exist_ok=True)
-gstats["n_task"]=len(data); gstats["n_test"]=len(test); gstats["n_test_leg2"]=3325
-json.dump(gstats,open(os.path.join(OUT,"nhtsa_neardup_grouping.json"),"w"),indent=1)
-if "--group-only" in sys.argv: log("GROUP ONLY DONE"); sys.exit(0)
 for r in data: r['split']='test' if r['NHTSACampaignNumber'] in test else 'train'
 log("task:",len(data),"test",len(test))
 y=np.array([lab[top(r['Component'])] for r in data]); te=np.array([r['split']=='test' for r in data])
-json.dump({"classes":classes,"n":len(data),"n_test":int(te.sum())},open(os.path.join(OUT,'nhtsa_neardup_task_meta.json'),'w'))
+json.dump({"classes":classes,"n":len(data),"n_test":int(te.sum())},open(os.path.join(HERE,'nhtsa_mask_meta.json'),'w'))
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -103,11 +68,11 @@ res=[]
 # TF-IDF per view
 for vk,field in VIEWS.items():
     v=TfidfVectorizer(lowercase=True,ngram_range=(1,2),min_df=3,sublinear_tf=True)
-    Xtr=v.fit_transform([r[field] or '' for r,m in zip(data,~te) if m])
-    Xte=v.transform([r[field] or '' for r,m in zip(data,te) if m])
+    Xtr=v.fit_transform([strip_mask(r[field]) for r,m in zip(data,~te) if m])
+    Xte=v.transform([strip_mask(r[field]) for r,m in zip(data,te) if m])
     clf=LogisticRegression(max_iter=2000).fit(Xtr,y[~te])
     pr=clf.predict(Xte); prob=clf.predict_proba(Xte)
-    np.savez(os.path.join(OUT,f'nhtsa_neardup_preds_{vk}_tfidf_s0.npz'),pred=pr,probs=prob,y=y[te])
+    np.savez(os.path.join(HERE,f'nhtsa_mask_preds_{vk}_tfidf_s0.npz'),pred=pr,probs=prob,y=y[te])
     res.append({"key":f"nhtsa_{vk}_tfidf_s0","f1":round(float(mf1(y[te],pr)),4)})
     log(res[-1])
 # w2v per view + BiLSTM
@@ -131,7 +96,7 @@ def predict(model,X):
             outs.append(model(torch.from_numpy(X[b:b+512]).long().to(device)).argmax(1).cpu().numpy())
     return np.concatenate(outs)
 for vk,field in VIEWS.items():
-    toks=[TOKEN_RE.findall((r[field] or '').lower())[:CAP] for r in data]
+    toks=[[w for w in TOKEN_RE.findall((r[field] or '').lower()) if w not in MASK][:CAP] for r in data]
     sents=[t for t,m in zip(toks,~te) if m]
     w2v=Word2Vec(vector_size=200,window=5,min_count=3,sg=1,epochs=10,workers=8,seed=SEED)
     w2v.build_vocab(sents); w2v.train(corpus_iterable=sents,total_examples=len(sents),epochs=10)
@@ -165,10 +130,10 @@ for vk,field in VIEWS.items():
                 if pat>=2: break
         model.load_state_dict(bstate)
         pr=predict(model,X[te])
-        np.savez(os.path.join(OUT,f'nhtsa_neardup_preds_{vk}_bilstm_s{seed}.npz'),pred=pr,y=y[te])
+        np.savez(os.path.join(HERE,f'nhtsa_mask_preds_{vk}_bilstm_s{seed}.npz'),pred=pr,y=y[te])
         res.append({"key":f"nhtsa_{vk}_bilstm_s{seed}","f1":round(float(mf1(y[te],pr)),4)})
         log(res[-1])
-json.dump(res,open(os.path.join(OUT,'nhtsa_neardup_results.json'),'w'),indent=1)
+json.dump(res,open(os.path.join(HERE,'nhtsa_mask_results.json'),'w'),indent=1)
 # paired randomisation between views (multiclass: swap predictions)
 rngp=np.random.default_rng(SEED)
 def paired(yy,pa,pb,n=5000):
@@ -182,12 +147,12 @@ pairs=[('summary','conseq'),('summary','remedy'),('remedy','conseq')]
 for arch,seeds in (('tfidf',(0,)),('bilstm',(0,1,2))):
     for a,b in pairs:
         for s in seeds:
-            da=np.load(os.path.join(OUT,f'nhtsa_neardup_preds_{a}_{arch}_s{s}.npz'))
-            db=np.load(os.path.join(OUT,f'nhtsa_neardup_preds_{b}_{arch}_s{s}.npz'))
+            da=np.load(os.path.join(HERE,f'nhtsa_mask_preds_{a}_{arch}_s{s}.npz'))
+            db=np.load(os.path.join(HERE,f'nhtsa_mask_preds_{b}_{arch}_s{s}.npz'))
             d0,p=paired(da['y'],da['pred'],db['pred'])
             cons.append({"contrast":f"{arch} s{s}: {a} vs {b}","delta":round(float(d0),4),"p":round(float(p),4)})
             log(cons[-1])
 m=len(cons)
 for i,c in enumerate(sorted(cons,key=lambda c:c["p"])): c["p_holm"]=round(min(1.0,c["p"]*(m-i)),4)
-json.dump(cons,open(os.path.join(OUT,'nhtsa_neardup_contrasts.json'),'w'),indent=1)
-log("runtime_s",round(time.time()-T0,1)); log("LEG ND DONE")
+json.dump(cons,open(os.path.join(HERE,'nhtsa_mask_contrasts.json'),'w'),indent=1)
+log("LEG B DONE")

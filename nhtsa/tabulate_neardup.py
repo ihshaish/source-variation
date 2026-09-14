@@ -2,9 +2,9 @@
 import json,os
 import os
 HERE=os.path.dirname(os.path.abspath(__file__)); D=os.path.join(os.path.dirname(HERE),'results','nhtsa','neardup')+'/'
-g=json.load(open(D+'nhtsaND_grouping.json')); res={r['key']:r['f1'] for r in json.load(open(D+'nhtsaND_results.json'))}
-con=json.load(open(D+'nhtsaND_contrasts.json'))
-leg2={r['key']:r['f1'] for r in json.load(open(os.path.join(os.path.dirname(HERE),'results','nhtsa','nhtsa2_results.json')))}
+g=json.load(open(D+'nhtsa_neardup_grouping.json')); res={r['key']:r['f1'] for r in json.load(open(D+'nhtsa_neardup_results.json'))}
+con=json.load(open(D+'nhtsa_neardup_contrasts.json'))
+leg2={r['key']:r['f1'] for r in json.load(open(os.path.join(os.path.dirname(HERE),'results','nhtsa','nhtsa_task_results.json')))}
 log=open(D+'nhtsa_neardup.log').read()
 rt=[l for l in log.splitlines() if l.startswith('runtime_s')]
 F={'summary':'Defect summary','conseq':'Consequence','remedy':'Remedy'}
@@ -21,7 +21,7 @@ sr=[x['delta'] for x in bil if 'remedy' in x['contrast']]+[tf[1]['delta']]
 rc=[c('bilstm',s,'remedy','conseq') for s in (0,1,2)]
 out=[]
 out.append('# NHTSA near-duplicate grouped split — result (registered v5.6, run 2026-09-13)\n')
-out.append(f"Runtime: {rt[0].split()[1] if rt else '?'} s. Script: views_wip/nhtsa_neardup.py. Raw outputs: views_wip/neardup/nhtsaND_*.\n")
+out.append(f"Runtime: {rt[0].split()[1] if rt else '?'} s. Script: views_wip/nhtsa_neardup.py. Raw outputs: views_wip/neardup/nhtsa_neardup_*.\n")
 out.append('## Grouping statistics\n')
 out.append(f"- Leg-2 exact-key groups: {g['exact_groups_leg2']}; near-duplicate groups (Jaccard ≥ 0.80, any field, plus exact keys): {g['groups_neardup']}")
 out.append(f"- New unions by field: Summary {g['Summary']['new_unions']}, Consequence {g['Consequence']['new_unions']}, Remedy {g['Remedy']['new_unions']}")

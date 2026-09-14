@@ -8,7 +8,7 @@ import json,os,re
 import numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__))
 ROOT=os.path.dirname(HERE)
-VIEWS=os.path.join(ROOT,'views'); NHTSA=os.path.join(ROOT,'nhtsa'); RESULTS=os.path.join(ROOT,'results')
+VIEWS=os.path.join(ROOT,'records'); NHTSA=os.path.join(ROOT,'nhtsa'); RESULTS=os.path.join(ROOT,'results')
 TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+")
 PAD,OOV=0,1; CAP=96
 

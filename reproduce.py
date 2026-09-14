@@ -13,7 +13,7 @@ If you ever see MISMATCH, something has drifted - please tell us:
 import json, os
 
 here = os.path.dirname(os.path.abspath(__file__))
-stats = json.load(open(os.path.join(here, "results", "l1_stats.json")))
+stats = json.load(open(os.path.join(here, "results", "asrs_stats.json")))
 cfg, con = stats["configs"], stats["contrasts"]
 
 checks = []
@@ -55,7 +55,7 @@ worstc = max(abs(0.860 - cv) for cv in cap)
 checks.append(("512-cap change <= 0.007 (paper)", 0.007, round(worstc, 4), worstc <= 0.007))
 
 # --- matched views (paper section "Record views on public safety reports") ---
-v = json.load(open(os.path.join(here, "results", "views", "views_stats.json")))
+v = json.load(open(os.path.join(here, "results", "records", "records_stats.json")))
 seq = [c for c in v["contrasts"] if c["family"] == "view" and "tfidf" not in c["contrast"]]
 ds = [-c["delta_f1"] for c in seq]  # stored narr-syn; paper reports syn advantage
 checks.append(("synopsis > narrative, all 6 sequence runs in 0.011-0.021",
@@ -64,7 +64,7 @@ checks.append(("synopsis > narrative, all 6 sequence runs in 0.011-0.021",
                and all(c["p_holm"] <= 0.0013 for c in seq)))
 tf = next(c for c in v["contrasts"] if "tfidf" in c["contrast"])
 checks.append(("TF-IDF view contrast null (p=0.78)", 0.78, tf["p"], abs(tf["p"] - 0.7806) < 0.01))
-em = json.load(open(os.path.join(here, "results", "views", "echo_mask.json")))
+em = json.load(open(os.path.join(here, "results", "records", "echo_mask.json")))
 checks.append(("masked synopsis still beats plain narrative", 0.8711, em["syn"]["echo_masked"],
                em["syn"]["echo_masked"] > em["narr"]["plain"]))
 dual = [c for c in v["contrasts"] if c["family"] == "author"]
@@ -72,11 +72,11 @@ dd = [c["delta_f1"] for c in dual]
 checks.append(("raw supplemental deficit 0.165-0.187, all p=0.0001",
                "0.165-0.187", f"{min(dd)}-{max(dd)}",
                all(0.165 <= round(d, 3) <= 0.187 for d in dd) and all(c["p"] == 0.0001 for c in dual)))
-aa = json.load(open(os.path.join(here, "results", "views", "author_analysis.json")))
+aa = json.load(open(os.path.join(here, "results", "records", "author_analysis.json")))
 checks.append(("matched-length subset: all paired tests null (p 0.30-0.93)",
                ">=0.30", min(m["p"] for m in aa["matched"]),
                all(m["p"] >= 0.30 for m in aa["matched"])))
-it = json.load(open(os.path.join(here, "results", "views", "interaction_test.json")))
+it = json.load(open(os.path.join(here, "results", "records", "interaction_test.json")))
 checks.append(("interaction D in 0.014-0.020, CI excludes zero, all seeds",
                "0.014-0.020", f'{min(x["D"] for x in it["interaction"])}-{max(x["D"] for x in it["interaction"])}',
                all(x["excludes_zero"] and 0.014 <= x["D"] <= 0.020 for x in it["interaction"])))
@@ -91,7 +91,7 @@ checks.append(("ensemble beats better single view, Holm <= 0.0104, all 6",
                all(e["delta"] > 0 and e["p_holm"] <= 0.0104 for e in ens)))
 
 # --- shared-representation controls (post hoc, review round) ---
-cg = json.load(open(os.path.join(here, "results", "views", "control_glove_D.json")))
+cg = json.load(open(os.path.join(here, "results", "records", "control_glove_D.json")))
 gi = cg["interaction_glove"]
 checks.append(("shared-GloVe D positive all runs, CI excludes zero in 2/3",
                "2/3", f'{sum(1 for x in gi if x["excludes_zero"])}/3',
@@ -107,7 +107,7 @@ checks.append(("shared-w2v NHTSA: remedy-consequence gap closes (|d| <= 0.03)",
                all(abs(c["delta"]) <= 0.03 for c in rc)))
 
 # --- NHTSA purpose hierarchy (v2 = duplicate-confined; 3m = class-vocab mask) ---
-n2 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa2_contrasts.json")))
+n2 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa_task_contrasts.json")))
 sc = [c["delta"] for c in n2 if "summary vs conseq" in c["contrast"]]
 sr = [c["delta"] for c in n2 if "summary vs remedy" in c["contrast"]]
 checks.append(("NHTSA summary>consequence 0.094-0.118", "0.094-0.118", f"{min(sc)}-{max(sc)}",
@@ -117,7 +117,7 @@ checks.append(("NHTSA summary>remedy 0.129-0.160", "0.129-0.160", f"{min(sr)}-{m
 checks.append(("NHTSA 11/12 contrasts Holm-significant", 11,
                sum(1 for c in n2 if c["p_holm"] <= 0.0024),
                sum(1 for c in n2 if c["p_holm"] <= 0.0024) == 11))
-n3 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa3m_contrasts.json")))
+n3 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa_mask_contrasts.json")))
 msr = [c["delta"] for c in n3 if "summary vs remedy" in c["contrast"]]
 checks.append(("masked hierarchy: 12/12 Holm-significant, summary>remedy 0.112-0.166",
                "12; 0.112-0.166", f'{sum(1 for c in n3 if c["p_holm"] <= 0.0024)}; {min(msr)}-{max(msr)}',
@@ -142,15 +142,15 @@ lk = json.load(open(os.path.join(here, "results", "ge", "leakage_report.json")))
 claim("GE keyword rule over curated outcome terms, repair action", 0.292, lk["keyword_baseline_macro_f1"]["repair"])
 
 # --- Table 2 seed-averaged differences with joint record-resampling intervals ---
-sa = json.load(open(os.path.join(here, "results", "views", "seedavg_table4.json")))
+sa = json.load(open(os.path.join(here, "results", "records", "seedavg.json")))
 claim("Table 2 ASRS synopsis - narrative, BiLSTM mean", 0.015, sa["syn_narr_bilstm"]["mean"])
 claim("Table 2 ASRS synopsis - narrative, RoBERTa mean", 0.015, sa["syn_narr_roberta"]["mean"])
 claim("Table 2 cross-record transfer T, mean", 0.179, sa["dual_raw"]["mean"])
 claim("Table 2 comparable-length subset, mean", 0.010, sa["dual_matched"]["mean"])
 
 # --- five redrawn negative samples (Supplementary Table S14) ---
-sd = json.load(open(os.path.join(here, "results", "views", "sensitivity_draws.json")))
-se = json.load(open(os.path.join(here, "results", "views", "sensitivity_extra.json")))
+sd = json.load(open(os.path.join(here, "results", "records", "sensitivity_draws.json")))
+se = json.load(open(os.path.join(here, "results", "records", "sensitivity_extra.json")))
 means = []
 for d in range(1, 6):
     v = [r["bilstm_delta"] for r in sd if r["draw"] == d] + [r["bilstm_delta"] for r in se if r["draw"] == d]
@@ -171,24 +171,24 @@ checks.append(("temporal: all six declared BiLSTM summary contrasts positive and
                len(fam) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in fam)))
 
 # --- NHTSA near-duplicate grouped split (Supplementary Table S18) ---
-nd = {r["key"]: r["f1"] for r in json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_results.json")))}
+nd = {r["key"]: r["f1"] for r in json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_results.json")))}
 for f, val in [("summary", 0.731), ("conseq", 0.644), ("remedy", 0.584)]:
     claim(f"near-duplicate split, BiLSTM {f} mean", val, sum(nd[f"nhtsa_{f}_bilstm_s{s}"] for s in range(3)) / 3)
-nc = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_contrasts.json")))
+nc = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_contrasts.json")))
 bil = [c for c in nc if c["contrast"].startswith("bilstm") and "summary vs" in c["contrast"]]
 checks.append(("near-duplicate: all six BiLSTM summary contrasts positive and Holm-significant (registered criterion)",
                6, sum(1 for c in bil if c["delta"] > 0 and c["p_holm"] < 0.05),
                len(bil) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in bil)))
-ng = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsaND_grouping.json")))
+ng = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_grouping.json")))
 claim("near-duplicate grouping: campaigns in multi-member groups", 9450, ng["campaigns_in_multi_groups"], 0)
 claim("near-duplicate grouping: largest transitive group", 4418, ng["largest_group"], 0)
 
 # --- RoBERTa suite (Supplementary Tables S19-S20) ---
-rb = json.load(open(os.path.join(here, "results", "views", "control_roberta.json")))
+rb = json.load(open(os.path.join(here, "results", "records", "control_roberta.json")))
 rres = {r["key"]: r["f1"] for r in rb["results"]}
 claim("RoBERTa ASRS synopsis - narrative, mean over seeds", 0.015,
       sum(rres[f"roberta_asrs_syn_s{s}"] - rres[f"roberta_asrs_narr_s{s}"] for s in range(3)) / 3, 0.001)
-pr = json.load(open(os.path.join(here, "results", "views", "control_roberta_prereg.json")))
+pr = json.load(open(os.path.join(here, "results", "records", "control_roberta_declared.json")))
 dr_tf = [x for x in pr["DR"] if x["baseline"] == "tfidf"]
 checks.append(("RoBERTa D against TF-IDF: every interval excludes zero", 3,
                sum(1 for x in dr_tf if x["ci"][0] > 0), all(x["ci"][0] > 0 for x in dr_tf)))

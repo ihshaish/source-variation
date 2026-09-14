@@ -1,5 +1,5 @@
 """Review control: the NHTSA field hierarchy under one SHARED representation.
-Identical to nhtsa_leg2.py's BiLSTM leg except that a single word2vec model
+Identical to nhtsa_task.py's BiLSTM leg except that a single word2vec model
 is trained once on the concatenation of all three fields' training text,
 then frozen and reused for summary, consequence and remedy. Field changes;
 embedding, model, targets and split stay fixed. Post-hoc control requested
@@ -116,7 +116,7 @@ for vk in VIEWS:
         model.load_state_dict(bstate)
         pr=predict(model,X[te])
         preds[(vk,seed)]=pr
-        np.savez(os.path.join(HERE,f'nhtsaS_preds_{vk}_bilstm_s{seed}.npz'),pred=pr,y=y[te])
+        np.savez(os.path.join(HERE,f'nhtsa_shared_preds_{vk}_bilstm_s{seed}.npz'),pred=pr,y=y[te])
         res.append({"key":f"nhtsaS_{vk}_bilstm_s{seed}","f1":round(float(mf1(y[te],pr)),4)})
         log(res[-1])
 

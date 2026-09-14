@@ -58,7 +58,7 @@ tedious but reliable. Then:
 ```
 export ASRS_DIR=/path/to/your/csvs
 cd asrs_pipeline
-python3 l0_corpus_stats.py     # checks your export against the paper's window
+python3 corpus_stats.py     # checks your export against the paper's window
 ```
 
 l0 prints the corpus counts next to ours; inside the task window they
@@ -69,10 +69,10 @@ the window, which is expected.
 
 ```
 cd asrs_pipeline
-python3 l1_build_task.py       # Aircraft task, fixed 80/20 split
-bash run_all_v2.sh             # GloVe family, w2v and fastText, contextual
+python3 build_task.py       # Aircraft task, fixed 80/20 split
+bash run_all.sh             # GloVe family, w2v and fastText, contextual
                                # models, order and cap probes
-python3 l1_stats.py            # bootstrap intervals and paired tests
+python3 paired_stats.py            # bootstrap intervals and paired tests
 ```
 
 Seeds are fixed and there is no hyperparameter search; every constant was
@@ -80,23 +80,23 @@ fixed before a result was seen. The full queue is an overnight job on one
 GPU. Every trainer takes --smoke for a two-minute sanity run; do that
 before leaving it overnight. GloVe vectors download from
 nlp.stanford.edu/projects/glove and the scripts look in EMB_DIR.
-l1_stats.py is the only place statistics happen on this side; everything
+paired_stats.py is the only place statistics happen on this side; everything
 upstream writes per-record predictions, so the statistics rerun without
 retraining.
 
 ### views/: the matched ASRS records
 
-Same Aircraft task, same cases, same split. build_views.py joins the
+Same Aircraft task, same cases, same split. build_records.py joins the
 analyst synopsis and the supplemental narrative to the task by report
 number from the same CSV export, then it is one queue:
 
 ```
 cd views
-python3 build_views.py         # needs ASRS_DIR, writes views_task.jsonl.gz
-bash run_views.sh              # w2v per record, BiLSTM finals, TF-IDF, stats
+python3 build_records.py         # needs ASRS_DIR, writes records_task.jsonl.gz
+bash run_records.sh              # w2v per record, BiLSTM finals, TF-IDF, stats
 python3 echo_mask.py           # category-vocabulary mask, both records
 python3 matrix_2x2.py          # dual-report train/test matrix
-python3 meanpool_views.py      # the pooling comparator
+python3 records_meanpool.py      # the pooling comparator
 python3 interaction_test.py    # D = (sequence - pooling | synopsis) - (same | narrative)
 python3 control_glove_D.py     # D again with one embedding shared across records
 python3 seedavg_and_threshold.py   # Table 2: seed-averaged differences, joint intervals
@@ -104,7 +104,7 @@ python3 seedavg_and_threshold.py   # Table 2: seed-averaged differences, joint i
 
 The synopsis is the analyst's 19-token rewrite and it beats the 178-token
 narrative, but only under sequence models, which is rather the point.
-views_task.jsonl.gz (53 MB) is not shipped; build_views.py rebuilds it
+records_task.jsonl.gz (53 MB) is not shipped; build_records.py rebuilds it
 from your export in a minute.
 
 Two further ASRS runs live here. sensitivity_draws.py and
@@ -115,7 +115,7 @@ suite is control_roberta.py (NHTSA fields and the synopsis),
 control_roberta_narr.py (one narrative fine-tune per process, because
 twelve in one process pushed a 16 GB laptop into swap),
 control_roberta_stats.py (paired contrasts over the stored predictions)
-and control_roberta_prereg.py (the three contrasts we declared before the
+and control_roberta_declared.py (the three contrasts we declared before the
 ASRS runs finished).
 
 ### nhtsa/: recall campaigns
@@ -131,8 +131,8 @@ gunzip it first (keep the .gz for the hash).
 ```
 cd nhtsa
 gunzip -k nhtsa_campaigns.jsonl.gz
-python3 nhtsa_leg2.py          # 16-class task, exact duplicates confined, TF-IDF and BiLSTM per field
-python3 nhtsa_leg3_mask.py     # the same with every class-label token masked
+python3 nhtsa_task.py          # 16-class task, exact duplicates confined, TF-IDF and BiLSTM per field
+python3 nhtsa_mask.py     # the same with every class-label token masked
 python3 control_nhtsa_shared.py    # one embedding shared across the three fields
 python3 nhtsa_temporal.py      # train 2000-2021, test 2022-2026
 python3 nhtsa_temporal_preds.py    # the temporal rerun with predictions kept, for the Holm-corrected contrasts
