@@ -1,41 +1,56 @@
-"""Attach synopsis and second-narrative views to the existing task records.
+"""Attaches the synopsis and the second narrative to the task records.
+Reads the task file and split written by build_task.py, joins the two
+extra text fields from the raw ASRS export by ACN, and writes
+records_task.jsonl.gz with narr, syn and r2 per record. The task and the
+split are unchanged; only the text fields are added.
+Run: ASRS_DIR=<csv export> python3 build_records.py"""
+import csv
+import glob
+import gzip
+import json
+import os
 
-Reads the paper's task file and split untouched, joins the extra text fields
-from the raw export by ACN, writes records_task.jsonl.gz with narr / syn / r2
-per record. The task and split are exactly the paper's; only the text views
-are new."""
-import csv, glob, gzip, json, re
 csv.field_size_limit(10**7)
 
-HERE=os.path.dirname(os.path.abspath(__file__))
-# ASRS_DIR: your CSV export; TASK_DIR: where build_task.py wrote the task (defaults to asrs_pipeline/)
-ASRS_DIR=os.environ['ASRS_DIR']; TASK_DIR=os.environ.get('TASK_DIR',os.path.join(os.path.dirname(HERE),'asrs_pipeline'))
-views={}
-for f in sorted(glob.glob(os.path.join(ASRS_DIR,'*.csv'))):
-    with open(f,errors='replace') as fh:
-        r=csv.reader(fh); h1=next(r); h2=next(r)
-        cols=[f"{a}/{b}".strip('/') for a,b in zip(h1,h2)]
-        try:
-            iacn=[i for i,c in enumerate(cols) if c.endswith('ACN')][0]
-            i2=cols.index('Report 2/Narrative'); isyn=cols.index('Report 1/Synopsis')
-        except (ValueError,IndexError):
-            continue
-        for row in r:
-            if len(row)<=max(iacn,i2,isyn): continue
-            acn=row[iacn].strip()
-            if acn: views[acn]=(row[isyn].strip(), row[i2].strip())
-print("view records:",len(views))
+HERE = os.path.dirname(os.path.abspath(__file__))
+# ASRS_DIR is the CSV export; TASK_DIR is where build_task.py wrote the task
+ASRS_DIR = os.environ['ASRS_DIR']
+TASK_DIR = os.environ.get('TASK_DIR', os.path.join(os.path.dirname(HERE), 'asrs_pipeline', 'data'))
 
-test=set(json.load(open(os.path.join(TASK_DIR,'split.json')))['test_acns'])
-n=hit_s=hit_r2=0
-with gzip.open(os.path.join(TASK_DIR,'task_aircraft.jsonl.gz'),'rt') as fin, \
-     gzip.open(os.path.join(HERE,'records_task.jsonl.gz'),'wt') as fout:
-    for l in fin:
-        r=json.loads(l); n+=1
-        syn,r2=views.get(r['acn'],('',''))
-        if syn: hit_s+=1
-        if len(r2)>40: hit_r2+=1
-        fout.write(json.dumps({'acn':r['acn'],'label':r['label'],'year':r['year'],
-                               'split':'test' if r['acn'] in test else 'train',
-                               'narr':r['text'],'syn':syn,'r2':r2})+'\n')
-print(f"task {n}, synopsis coverage {hit_s*100//n}%, dual-narrative {hit_r2} ({hit_r2*100//n}%)")
+text_by_acn = {}
+for path in sorted(glob.glob(os.path.join(ASRS_DIR, '*.csv'))):
+    with open(path, errors='replace') as f:
+        reader = csv.reader(f)
+        header1 = next(reader)
+        header2 = next(reader)
+        columns = [f"{a}/{b}".strip('/') for a, b in zip(header1, header2)]
+        try:
+            acn_col = [i for i, c in enumerate(columns) if c.endswith('ACN')][0]
+            r2_col = columns.index('Report 2/Narrative')
+            syn_col = columns.index('Report 1/Synopsis')
+        except (ValueError, IndexError):
+            continue
+        for row in reader:
+            if len(row) <= max(acn_col, r2_col, syn_col):
+                continue
+            acn = row[acn_col].strip()
+            if acn:
+                text_by_acn[acn] = (row[syn_col].strip(), row[r2_col].strip())
+print("export records:", len(text_by_acn))
+
+test_acns = set(json.load(open(os.path.join(TASK_DIR, 'split.json')))['test_acns'])
+count = with_synopsis = with_second = 0
+with gzip.open(os.path.join(TASK_DIR, 'task_aircraft.jsonl.gz'), 'rt') as fin, \
+     gzip.open(os.path.join(HERE, 'records_task.jsonl.gz'), 'wt') as fout:
+    for line in fin:
+        record = json.loads(line)
+        count += 1
+        syn, r2 = text_by_acn.get(record['acn'], ('', ''))
+        if syn:
+            with_synopsis += 1
+        if len(r2) > 40:
+            with_second += 1
+        fout.write(json.dumps({'acn': record['acn'], 'label': record['label'], 'year': record['year'],
+                               'split': 'test' if record['acn'] in test_acns else 'train',
+                               'narr': record['text'], 'syn': syn, 'r2': r2}) + '\n')
+print(f"task {count}, synopsis coverage {with_synopsis*100//count}%, dual-narrative {with_second} ({with_second*100//count}%)")

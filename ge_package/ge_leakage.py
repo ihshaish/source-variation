@@ -1,60 +1,75 @@
-"""P1b — outcome-leakage audit + deterministic regex baseline.
-
-Uses lexicon.json (class names, synonyms, part identifiers, replacement
-verbs; the seeded file is completed with domain knowledge before running). Reports, per field and class, the share of
-narratives containing each term category; runs a keyword-rule baseline
-(most-specific-match wins) on the held-out set; writes masks/outcome_terms.txt
-for the masked rerun via ge_train --mask-file.
+"""Outcome-leakage audit and keyword baseline. Reads lexicon.json (class
+names, synonyms, part identifiers and replacement verbs; the seed file is
+completed with domain knowledge before running) and reports, per field and
+class, the share of records containing a class term and the share with a
+replacement verb within four tokens of one. Runs a keyword-rule baseline on
+the held-out records of the random split, where the class with the most term
+hits wins. Writes leakage_report.json to GE_RES and masks/outcome_terms.txt,
+the mask file for the masked rerun with ge_train.py --mask-file.
+Run: python ge_leakage.py
 """
-import json, os
+import json
+import os
+
 import numpy as np
+
 from ge_lib import DATA, RES, load_records, macro_f1, record_tokens
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-lex = json.load(open(os.path.join(HERE, "lexicon.json")))
-recs = load_records()
+lexicon = json.load(open(os.path.join(HERE, "lexicon.json")))
+records = load_records()
 split = set(json.load(open(os.path.join(DATA, "splits.json")))["random"])
 os.makedirs(os.path.join(HERE, "masks"), exist_ok=True)
 os.makedirs(RES, exist_ok=True)
 
-terms = {int(c): {t.lower() for cat in cats.values() for t in cat}
-         for c, cats in lex["classes"].items()}
-verbs = {v.lower() for v in lex["replacement_verbs"]}
+terms = {int(label): {term.lower() for category in categories.values() for term in category}
+         for label, categories in lexicon["classes"].items()}
+verbs = {verb.lower() for verb in lexicon["replacement_verbs"]}
 all_terms = set().union(*terms.values()) | verbs
 open(os.path.join(HERE, "masks", "outcome_terms.txt"), "w").write("\n".join(sorted(all_terms)))
 
 audit = {}
 for field in ("customer", "technician", "repair"):
-    per = {}
-    for c, tset in terms.items():
-        n = hit = verb_near = 0
-        for r in recs:
-            if r["label"] != c:
+    per_class = {}
+    for label, term_set in terms.items():
+        count = 0
+        hit = 0
+        verb_near = 0
+        for record in records:
+            if record["label"] != label:
                 continue
-            toks = record_tokens(r, field)
-            n += 1
-            pos = [i for i, t in enumerate(toks) if t in tset]
-            if pos:
+            tokens = record_tokens(record, field)
+            count += 1
+            positions = [i for i, token in enumerate(tokens) if token in term_set]
+            if positions:
                 hit += 1
-                if any(t in verbs for i in pos for t in toks[max(0, i-4):i+5]):
+                if any(token in verbs for i in positions
+                       for token in tokens[max(0, i - 4):i + 5]):
                     verb_near += 1
-        per[c] = {"n": n, "contains_class_terms_pct": round(100*hit/max(1,n), 1),
-                  "with_replacement_verb_near_pct": round(100*verb_near/max(1,n), 1)}
-    audit[field] = per
+        per_class[label] = {"n": count,
+                            "contains_class_terms_pct": round(100 * hit / max(1, count), 1),
+                            "with_replacement_verb_near_pct":
+                                round(100 * verb_near / max(1, count), 1)}
+    audit[field] = per_class
 
-# regex/keyword baseline on held-out (rule: class with most term hits; ties/none -> majority)
-test = [r for r in recs if r["id"] in split]
-maj = int(np.bincount([r["label"] for r in recs if r["id"] not in split]).argmax())
-base = {}
+# no term hits: training majority class; tie on hits: lowest class index
+test = [record for record in records if record["id"] in split]
+train_labels = [record["label"] for record in records if record["id"] not in split]
+majority = int(np.bincount(train_labels).argmax())
+baseline = {}
 for field in ("customer", "technician", "repair"):
-    yhat, y = [], []
-    for r in test:
-        toks = set(record_tokens(r, field))
-        scores = {c: len(toks & t) for c, t in terms.items()}
+    yhat = []
+    y = []
+    for record in test:
+        tokens = set(record_tokens(record, field))
+        scores = {label: len(tokens & term_set) for label, term_set in terms.items()}
         top = max(scores.values())
-        yhat.append(maj if top == 0 else min(c for c, s in scores.items() if s == top))
-        y.append(r["label"])
-    base[field] = round(macro_f1(np.array(y), np.array(yhat)), 4)
-out = {"term_audit": audit, "keyword_baseline_macro_f1": base}
+        if top == 0:
+            yhat.append(majority)
+        else:
+            yhat.append(min(label for label, score in scores.items() if score == top))
+        y.append(record["label"])
+    baseline[field] = round(macro_f1(np.array(y), np.array(yhat)), 4)
+out = {"term_audit": audit, "keyword_baseline_macro_f1": baseline}
 json.dump(out, open(os.path.join(RES, "leakage_report.json"), "w"), indent=1)
 print(json.dumps(out, indent=1))

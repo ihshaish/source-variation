@@ -1,14 +1,15 @@
-"""L1 data build — NASA ASRS Aircraft binary task per main.tex §3.3/§4.5.
+"""Builds the binary Aircraft task from the ASRS export.
 
-Setup (as in the paper):
-- 18 primary-problem categories; binary task Aircraft vs rest; blank Primary
-  Problem excluded (L0 finding, 8,825 records).
-- Majority-class (rest) undersampled to 50:50 against Aircraft.
-- One 80/20 stratified train/test split BEFORE any preprocessing or tuning;
-  global data seed fixed. Tokeniser/vocabulary statistics from train only.
+Reads every CSV in ASRS_DIR, keeps one record per ACN with a non-blank
+Primary Problem and a narrative, and labels Aircraft as 1 and every other
+category as 0. The larger class is undersampled to a 50:50 balance, then a
+stratified 80/20 train/test split is drawn once, before any preprocessing,
+from a fixed data seed. Token statistics are taken from the training part
+only.
 
-Outputs data/task_aircraft.jsonl.gz with {acn, year, label, text} and
-data/split.json with train/test ACN lists.
+Writes task_aircraft.jsonl.gz ({acn, year, label, text} per line), split.json
+(the test ACNs) and train_stats.json to ASRS_DATA. Records after MAX_YEAR are
+dropped. Run: python3 build_task.py
 """
 import csv
 import gzip
@@ -37,65 +38,65 @@ def read_records(path):
         except StopIteration:
             return []
         header = [(s.strip(), t.strip()) for s, t in zip(sections, fields)]
-        idx = {}
-        for key, sec, fld in [("date", "Time", "Date"),
-                              ("primary", "Assessments", "Primary Problem"),
-                              ("narrative", "Report 1", "Narrative")]:
-            hits = [i for i, (s, t) in enumerate(header) if s == sec and t == fld]
+        column = {}
+        for key, section, field in [("date", "Time", "Date"),
+                                    ("primary", "Assessments", "Primary Problem"),
+                                    ("narrative", "Report 1", "Narrative")]:
+            hits = [i for i, (s, t) in enumerate(header) if s == section and t == field]
             if not hits and key == "primary":
                 hits = [i for i, (_, t) in enumerate(header) if t == "Primary Problem"]
-            idx[key] = hits[0] if hits else None
-        if idx["narrative"] is None or idx["date"] is None or idx["primary"] is None:
+            column[key] = hits[0] if hits else None
+        if column["narrative"] is None or column["date"] is None or column["primary"] is None:
             return []
-        out = []
+        records = []
         for row in reader:
-            if len(row) <= idx["narrative"] or not row[0].strip().isdigit():
+            if len(row) <= column["narrative"] or not row[0].strip().isdigit():
                 continue
-            date = row[idx["date"]].strip()
+            date = row[column["date"]].strip()
             if not re.fullmatch(r"(19|20)\d{4}", date):
                 continue
-            out.append((row[0].strip(), int(date) // 100,
-                        row[idx["primary"]].strip(), row[idx["narrative"]].strip()))
-        return out
+            records.append((row[0].strip(), int(date) // 100,
+                            row[column["primary"]].strip(), row[column["narrative"]].strip()))
+        return records
 
 
 def main():
     rng = np.random.default_rng(GLOBAL_DATA_SEED)
     seen = set()
-    pos, neg = [], []
-    for fn in sorted(f for f in os.listdir(DATA_DIR) if f.endswith(".csv")):
-        for acn, year, primary, narr in read_records(os.path.join(DATA_DIR, fn)):
+    positives = []
+    negatives = []
+    for filename in sorted(f for f in os.listdir(DATA_DIR) if f.endswith(".csv")):
+        for acn, year, primary, narrative in read_records(os.path.join(DATA_DIR, filename)):
             if year > MAX_YEAR:
                 continue
-            if acn in seen or not primary or not narr:
+            if acn in seen or not primary or not narrative:
                 continue
             seen.add(acn)
-            rec = {"acn": acn, "year": year, "text": narr}
+            record = {"acn": acn, "year": year, "text": narrative}
             if primary == "Aircraft":
-                rec["label"] = 1
-                pos.append(rec)
+                record["label"] = 1
+                positives.append(record)
             else:
-                rec["label"] = 0
-                neg.append(rec)
-    print(f"aircraft {len(pos)}, rest {len(neg)}")
+                record["label"] = 0
+                negatives.append(record)
+    print(f"aircraft {len(positives)}, rest {len(negatives)}")
 
-    keep = rng.choice(len(neg), size=len(pos), replace=False)
-    neg = [neg[i] for i in sorted(keep)]
-    data = pos + neg
+    keep = rng.choice(len(negatives), size=len(positives), replace=False)
+    negatives = [negatives[i] for i in sorted(keep)]
+    data = positives + negatives
     order = rng.permutation(len(data))
     data = [data[i] for i in order]
 
-    # stratified 80/20: permute within class, take 20% of each
     test_acns = set()
-    for lbl in (0, 1):
-        cls = [r["acn"] for r in data if r["label"] == lbl]
-        cls_order = rng.permutation(len(cls))
-        n_test = round(0.2 * len(cls))
-        test_acns.update(cls[i] for i in cls_order[:n_test])
+    for label in (0, 1):
+        class_acns = [record["acn"] for record in data if record["label"] == label]
+        class_order = rng.permutation(len(class_acns))
+        n_test = round(0.2 * len(class_acns))
+        test_acns.update(class_acns[i] for i in class_order[:n_test])
 
     with gzip.open(os.path.join(OUT, "task_aircraft.jsonl.gz"), "wt") as f:
-        for r in data:
-            f.write(json.dumps(r) + "\n")
+        for record in data:
+            f.write(json.dumps(record) + "\n")
     split = {
         "seed": GLOBAL_DATA_SEED,
         "n_total": len(data),
@@ -104,28 +105,27 @@ def main():
     }
     with open(os.path.join(OUT, "split.json"), "w") as f:
         json.dump(split, f)
-    n_tr = len(data) - len(test_acns)
-    print(f"total {len(data)} (50:50), train {n_tr}, test {len(test_acns)}")
+    n_train = len(data) - len(test_acns)
+    print(f"total {len(data)} (50:50), train {n_train}, test {len(test_acns)}")
 
-    # train-partition token stats (for the paper's data section)
     from collections import Counter
     vocab = Counter()
-    lens = []
-    for r in data:
-        if r["acn"] in test_acns:
+    lengths = []
+    for record in data:
+        if record["acn"] in test_acns:
             continue
-        toks = TOKEN_RE.findall(r["text"].lower())
-        vocab.update(toks)
-        lens.append(len(toks))
-    lens = np.array(lens)
+        tokens = TOKEN_RE.findall(record["text"].lower())
+        vocab.update(tokens)
+        lengths.append(len(tokens))
+    lengths = np.array(lengths)
     stats = {
         "train_vocab_types": len(vocab),
-        "train_tokens": int(lens.sum()),
-        "narrative_tokens_mean": float(lens.mean()),
-        "narrative_tokens_p50": int(np.percentile(lens, 50)),
-        "narrative_tokens_p95": int(np.percentile(lens, 95)),
-        "narrative_tokens_p99": int(np.percentile(lens, 99)),
-        "pct_truncated_at_256": float((lens > 256).mean() * 100),
+        "train_tokens": int(lengths.sum()),
+        "narrative_tokens_mean": float(lengths.mean()),
+        "narrative_tokens_p50": int(np.percentile(lengths, 50)),
+        "narrative_tokens_p95": int(np.percentile(lengths, 95)),
+        "narrative_tokens_p99": int(np.percentile(lengths, 99)),
+        "pct_truncated_at_256": float((lengths > 256).mean() * 100),
     }
     with open(os.path.join(OUT, "train_stats.json"), "w") as f:
         json.dump(stats, f, indent=1)

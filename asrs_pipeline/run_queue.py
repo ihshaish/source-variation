@@ -1,9 +1,11 @@
-"""L1/L2 run queue — sequential (single MPS device), resumable.
+"""Runs train.py for each embedding and recurrent architecture in turn.
 
-Order puts the headline thesis comparison (GloVe-200, both architectures) and
-the new science (fastText, L2) first, remaining GloVe dimensionalities after.
-Avi2Vec is appended automatically if the cleared vectors appear as
-data/avi2vec.kv (see PAPER_A_EXPERIMENT_PLAN.md §2).
+One configuration at a time, since there is a single GPU device. GloVe-200
+and fastText come first, the other GloVe sizes after. Avi2Vec is added to
+the end of the queue if data/avi2vec.kv exists. A configuration that fails
+is reported and the queue moves on; train.py skips folds and seeds that are
+already in the results file, so the queue can be restarted.
+Run: python3 run_queue.py
 """
 import os
 import subprocess
@@ -22,8 +24,8 @@ if os.path.exists(os.path.join(HERE, "data", "avi2vec.kv")):
 
 for emb, arch in CONFIGS:
     print(f"=== {emb} / {arch} ===", flush=True)
-    r = subprocess.run([sys.executable, os.path.join(HERE, "train.py"),
-                        "--emb", emb, "--arch", arch])
-    if r.returncode != 0:
-        print(f"!! {emb}/{arch} exited {r.returncode}; continuing", flush=True)
+    result = subprocess.run([sys.executable, os.path.join(HERE, "train.py"),
+                             "--emb", emb, "--arch", arch])
+    if result.returncode != 0:
+        print(f"!! {emb}/{arch} exited {result.returncode}; continuing", flush=True)
 print("queue complete", flush=True)

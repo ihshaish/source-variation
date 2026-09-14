@@ -1,46 +1,42 @@
-# paper_a_ge — GE-side experiments for the journal article
+# ge_package
 
-This folder contains the GE-side analysis pipeline for the paper. It is
-self-contained: the scripts implement the same setup as the article's
-public-corpus section (frozen embeddings, 10-fold cross-validation inside an
-80% training partition, three seeded final models scored on the held-out 20%),
-so results from here and from the public corpus are directly comparable. A
-standard PC is sufficient; Python 3.10 or later, with or without a GPU (CPU
-training is slower but workable overnight).
+The GE side of the study. These scripts ran inside GE Aerospace on the
+proprietary repair records and implement the same setup as the public side:
+frozen embeddings, 10-fold cross-validation inside an 80% training partition,
+three trained models scored on the held-out 20%. A standard PC is enough;
+Python 3.10 or later, with or without a GPU.
 
 ## Setup
 
-Dependencies install with `python -m pip install -r requirements.txt`.
+```
+python -m pip install -r requirements.txt
+python ge_selftest.py
+```
 
-`python ge_selftest.py` generates a small synthetic dataset and runs the whole
-chain on it, ending with SELFTEST PASSED when the environment is able to run
-everything. It involves no real data and takes a couple of minutes; it is the
-quickest way to confirm the machine is ready before the actual records are
-exported.
+The self-test generates a small invented dataset and runs the whole chain on
+it, ending with SELFTEST PASSED. It touches no real data and takes a couple
+of minutes.
 
 ## Inputs
 
 Three inputs go into `ge_data/`:
 
-- `ge_records.csv` — one row per repair record, columns
+- `ge_records.csv`, one row per repair record, with the columns
   `record_id, date, customer, technician, repair, label, unit_serial, operator`.
-  Dates as YYYYMM or YYYY-MM-DD. Labels either 0–3 directly, or class names
-  accompanied by a `label_map.json` of the form `{"Processor assembly": 0, ...}`.
-  The `unit_serial` and `operator` columns can be partly empty but should be
-  present: they are what makes the grouped robustness splits possible.
-- `avi2vec.kv` — the Avi2Vec vectors, either as a gensim KeyedVectors save or
-  in word2vec text/binary format; the loader accepts both.
-- The GloVe files (`glove.6B.*.txt`) stay wherever they already are; the
+  Dates as YYYYMM or YYYY-MM-DD. Labels either 0 to 3 directly, or class names
+  with a `label_map.json` of the form `{"Processor assembly": 0, ...}`. The
+  `unit_serial` and `operator` columns may be partly empty but should exist;
+  they make the grouped splits possible.
+- `avi2vec.kv`, the Avi2Vec vectors, as a gensim KeyedVectors save or in
+  word2vec text or binary format.
+- The GloVe files (`glove.6B.*.txt`), wherever they already are; the
   environment variable `EMB_DIR` points at that folder.
 
-`lexicon.json` needs completing before the leakage audit: for each class, the
-synonyms, abbreviations and part numbers a technician would plausibly write,
-plus any replacement verbs missing from the seed list. This is a few minutes
-of domain knowledge and determines what the audit counts.
+`lexicon.json` lists, per class, the synonyms, abbreviations and part numbers
+a technician would write, plus replacement verbs. It has to be completed
+before the outcome-term audit, because it determines what the audit counts.
 
 ## Running
-
-The sequence is:
 
 ```
 python ge_build.py
@@ -54,29 +50,29 @@ python ge_stats.py
 python probe_terms.py
 ```
 
-`ge_queue.py` carries the training matrix (roughly 250 model fits; minutes per
-fit on a GPU, tens of minutes on CPU) and can be left unattended. Every result
-is written under an idempotent key, so any interrupted script can be rerun and
-will continue from where it stopped rather than repeating work.
+`ge_queue.py` runs the training matrix, about 325 model fits, minutes per fit
+on a GPU and tens of minutes on CPU, and can be left unattended. Every result
+is written under a key, so an interrupted script continues from where it
+stopped when rerun.
 
 ## Outputs
 
-The `results\` folder holds aggregate JSON files and per-record integer arrays
-(true and predicted class indices); no narrative text is written anywhere in
-it. That folder, together with the console output of `probe_terms.py`, is what
-comes back for the paper.
+The `results/` folder holds aggregate JSON files and per-record integer arrays
+of true and predicted class indices. No record text is written anywhere in it.
+That folder, with the console output of `probe_terms.py`, is what left GE for
+the paper and is what results/ge/ in the repository root contains.
 
-## Coverage
+## What one run covers
 
-One full run produces: the differential-vocabulary stratification and masking
-test specified in the manuscript; the outcome-leakage audit with a keyword
-baseline and a masked re-run; in-domain fastText and word2vec controls
-matching the public-corpus pair; convolutional and mean-pooling architecture
-probes; a character-n-gram TF-IDF baseline; duplicate-grouped, unit, operator
-and temporal splits for the headline configuration; bootstrap confidence
-intervals, paired randomisation tests, per-class tables and confusion
-matrices; and the cosine-neighbour probe terms for the embedding table.
-
-Outside the package's scope: the source-code checks on the original thesis
-pipeline, transformer fine-tuning (a runner can be added once a suitable GE
-machine is identified), and the human audit control arm.
+The differential-vocabulary stratification and masking test; the outcome-term
+audit with a keyword baseline and a masked rerun; in-domain fastText and
+word2vec controls matching the public-side pair; convolutional and
+mean-pooling architecture probes; a character n-gram TF-IDF baseline;
+duplicate-grouped, unit, operator and temporal splits for the headline
+configuration; bootstrap confidence intervals, paired randomisation tests,
+per-class tables and confusion matrices; and the cosine-neighbour probe terms
+for the embedding table. Two things are outside the package. The transformer trained from scratch
+and the 10-fold means of the initial implementation come from the earlier
+pipeline of the initial study. Transformer fine-tuning was not run on the
+GE records, because pretrained checkpoints cannot be brought into the
+environment.

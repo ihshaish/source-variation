@@ -6,9 +6,7 @@ __pycache__/
 !results/nhtsa/neardup/*.npz
 *.kv
 *_DONE
-QUEUE_DONE
-LEGB_DONE
-views/views_task.jsonl.gz
-views/pool_views.jsonl.gz
+records/records_task.jsonl.gz
+records/pool_records.jsonl.gz
 nhtsa/nhtsa_campaigns.jsonl
 .DS_Store

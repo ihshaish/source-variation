@@ -1,142 +1,209 @@
-"""Review control: the NHTSA field hierarchy under one SHARED representation.
-Identical to nhtsa_task.py's BiLSTM leg except that a single word2vec model
-is trained once on the concatenation of all three fields' training text,
-then frozen and reused for summary, consequence and remedy. Field changes;
-embedding, model, targets and split stay fixed. Post-hoc control requested
-at review; interpretation pre-committed: hierarchy persisting Holm-significant
-leaves Claim 3 unchanged under the strictest field-only comparison; otherwise
-the field contrast is scoped to fields-with-their-fitted-representations."""
-import json,os,re
+"""Trains the BiLSTM of nhtsa_task.py with one word2vec model shared across
+fields. The task build and split are the same as in nhtsa_task.py, but a
+single word2vec is trained once on the training text of all three fields
+together, then frozen and reused for summary, consequence and remedy, so only
+the field changes between runs. Three seeds per field, then paired
+randomisation tests between fields with Holm correction over the nine
+contrasts. Writes one nhtsa_shared_preds_*.npz per run and
+control_nhtsa_shared.json. Run: python3 control_nhtsa_shared.py"""
+import json
+import os
+import re
 import numpy as np
-HERE=os.path.dirname(os.path.abspath(__file__))
-TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+"); SEED=20260802
-def log(*a): print(*a,flush=True)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TOKEN_RE = re.compile(r"[a-z][a-z0-9/-]+")
+SEED = 20260802
 
-rows=[json.loads(l) for l in open(os.path.join(HERE,'nhtsa_campaigns.jsonl'))]
-seen=set(); camps=[]
-for r in rows:
-    if r['NHTSACampaignNumber'] in seen: continue
-    seen.add(r['NHTSACampaignNumber']); camps.append(r)
+
+def log(*args):
+    print(*args, flush=True)
+
+
+records = [json.loads(line) for line in open(os.path.join(HERE, 'nhtsa_campaigns.jsonl'))]
+seen = set()
+campaigns = []
+for record in records:
+    if record['NHTSACampaignNumber'] in seen:
+        continue
+    seen.add(record['NHTSACampaignNumber'])
+    campaigns.append(record)
 from collections import Counter
-def top(c): return (c or '').split(':')[0].split(',')[0].strip()
-cnt=Counter(top(r['Component']) for r in camps)
-classes=sorted([k for k,v in cnt.items() if v>=300 and k])
-lab={k:i for i,k in enumerate(classes)}
-data=[r for r in camps if top(r['Component']) in lab]
-rng=np.random.default_rng(SEED)
-parent=list(range(len(data)))
+
+
+def top_component(component):
+    return (component or '').split(':')[0].split(',')[0].strip()
+
+
+class_counts = Counter(top_component(record['Component']) for record in campaigns)
+classes = sorted([name for name, count in class_counts.items() if count >= 300 and name])
+label_index = {name: i for i, name in enumerate(classes)}
+data = [record for record in campaigns if top_component(record['Component']) in label_index]
+rng = np.random.default_rng(SEED)
+parent = list(range(len(data)))
+
+
 def find(i):
-    while parent[i]!=i: parent[i]=parent[parent[i]]; i=parent[i]
+    while parent[i] != i:
+        parent[i] = parent[parent[i]]
+        i = parent[i]
     return i
-def union(a,b):
-    ra,rb=find(a),find(b)
-    if ra!=rb: parent[rb]=ra
-for field in ('Summary','Consequence','Remedy'):
-    first={}
-    for i,r in enumerate(data):
-        k=(r[field] or '').strip().lower()[:400]
-        if not k: continue
-        if k in first: union(first[k],i)
-        else: first[k]=i
-groups={}
-for i,r in enumerate(data): groups.setdefault(find(i),[]).append(r)
-gkeys=list(groups); rng.shuffle(gkeys)
-ntest=int(0.2*len(data)); test=set(); c=0
-for k in gkeys:
-    if c>=ntest: break
-    for r in groups[k]: test.add(r['NHTSACampaignNumber'])
-    c+=len(groups[k])
-for r in data: r['split']='test' if r['NHTSACampaignNumber'] in test else 'train'
-y=np.array([lab[top(r['Component'])] for r in data]); te=np.array([r['split']=='test' for r in data])
-log("task:",len(data),"test:",int(te.sum()),"classes:",len(classes))
+
+
+def union(a, b):
+    root_a, root_b = find(a), find(b)
+    if root_a != root_b:
+        parent[root_b] = root_a
+
+
+for field in ('Summary', 'Consequence', 'Remedy'):
+    first_seen = {}
+    for i, record in enumerate(data):
+        key = (record[field] or '').strip().lower()[:400]
+        if not key:
+            continue
+        if key in first_seen:
+            union(first_seen[key], i)
+        else:
+            first_seen[key] = i
+groups = {}
+for i, record in enumerate(data):
+    groups.setdefault(find(i), []).append(record)
+group_keys = list(groups)
+rng.shuffle(group_keys)
+n_test = int(0.2 * len(data))
+test_campaigns = set()
+count = 0
+for key in group_keys:
+    if count >= n_test:
+        break
+    for record in groups[key]:
+        test_campaigns.add(record['NHTSACampaignNumber'])
+    count += len(groups[key])
+for record in data:
+    record['split'] = 'test' if record['NHTSACampaignNumber'] in test_campaigns else 'train'
+y = np.array([label_index[top_component(record['Component'])] for record in data])
+is_test = np.array([record['split'] == 'test' for record in data])
+log("task:", len(data), "test:", int(is_test.sum()), "classes:", len(classes))
 
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
-def mf1(yy,p): return f1_score(yy,p,average='macro')
-VIEWS={'summary':'Summary','conseq':'Consequence','remedy':'Remedy'}
-CAP=96; PAD,OOV=0,1
 
-# ONE word2vec over the concatenation of all three fields' training text
+
+def macro_f1(labels, pred):
+    return f1_score(labels, pred, average='macro')
+
+
+FIELDS = {'summary': 'Summary', 'conseq': 'Consequence', 'remedy': 'Remedy'}
+CAP = 96
+PAD, OOV = 0, 1
+
 from gensim.models import Word2Vec
-toks_by={vk:[TOKEN_RE.findall((r[f] or '').lower())[:CAP] for r in data] for vk,f in VIEWS.items()}
-shared_sents=[t for vk in VIEWS for t,m in zip(toks_by[vk],~te) if m and t]
-w2v=Word2Vec(vector_size=200,window=5,min_count=3,sg=1,epochs=10,workers=8,seed=SEED)
-w2v.build_vocab(shared_sents); w2v.train(corpus_iterable=shared_sents,total_examples=len(shared_sents),epochs=10)
-vocab=set(t for vk in VIEWS for ts in toks_by[vk] for t in ts)
-rng2=np.random.default_rng(0)
-idx,vecs={},[np.zeros(200,np.float32),rng2.normal(0,0.1,200).astype(np.float32)]
-for w in sorted(vocab):
-    if w in w2v.wv: idx[w]=len(vecs); vecs.append(w2v.wv[w].astype(np.float32))
-matrix=np.stack(vecs)
-log("shared w2v vocab:",len(idx))
+tokens_by_field = {field_key: [TOKEN_RE.findall((record[field] or '').lower())[:CAP] for record in data] for field_key, field in FIELDS.items()}
+shared_sentences = [t for field_key in FIELDS for t, m in zip(tokens_by_field[field_key], ~is_test) if m and t]
+w2v = Word2Vec(vector_size=200, window=5, min_count=3, sg=1, epochs=10, workers=8, seed=SEED)
+w2v.build_vocab(shared_sentences)
+w2v.train(corpus_iterable=shared_sentences, total_examples=len(shared_sentences), epochs=10)
+vocab = set(t for field_key in FIELDS for ts in tokens_by_field[field_key] for t in ts)
+oov_rng = np.random.default_rng(0)
+word_index, vectors = {}, [np.zeros(200, np.float32), oov_rng.normal(0, 0.1, 200).astype(np.float32)]
+for word in sorted(vocab):
+    if word in w2v.wv:
+        word_index[word] = len(vectors)
+        vectors.append(w2v.wv[word].astype(np.float32))
+matrix = np.stack(vectors)
+log("shared w2v vocab:", len(word_index))
 
-import torch, torch.nn as nn
-device='mps' if torch.backends.mps.is_available() else 'cpu'
+import torch
+import torch.nn as nn
+device = 'mps' if torch.backends.mps.is_available() else 'cpu'
+
+
 class RNN(nn.Module):
-    def __init__(s,m,nc):
+    def __init__(self, matrix, n_classes):
         super().__init__()
-        s.emb=nn.Embedding.from_pretrained(torch.from_numpy(m),freeze=True,padding_idx=PAD)
-        s.rnn=nn.LSTM(m.shape[1],64,batch_first=True,bidirectional=True)
-        s.drop=nn.Dropout(0.3); s.fc=nn.Linear(128,nc)
-    def forward(s,x):
-        h=s.rnn(s.emb(x))[1][0]
-        return s.fc(s.drop(torch.cat([h[0],h[1]],dim=1)))
-def predict(model,X):
-    model.eval(); outs=[]
-    with torch.no_grad():
-        for b in range(0,len(X),512):
-            outs.append(model(torch.from_numpy(X[b:b+512]).long().to(device)).argmax(1).cpu().numpy())
-    return np.concatenate(outs)
+        self.emb = nn.Embedding.from_pretrained(torch.from_numpy(matrix), freeze=True, padding_idx=PAD)
+        self.rnn = nn.LSTM(matrix.shape[1], 64, batch_first=True, bidirectional=True)
+        self.drop = nn.Dropout(0.3)
+        self.fc = nn.Linear(128, n_classes)
 
-res=[]; preds={}
-for vk in VIEWS:
-    toks=toks_by[vk]
-    X=np.zeros((len(toks),CAP),np.int32)
-    for i,ts in enumerate(toks):
-        for j,t in enumerate(ts): X[i,j]=idx.get(t,OOV)
-    for seed in (0,1,2):
-        Xtr,Xva,ytr,yva=train_test_split(X[~te],y[~te],test_size=0.05,stratify=y[~te],random_state=SEED+seed)
-        torch.manual_seed(700+seed)
-        model=RNN(matrix,len(classes)).to(device)
-        opt=torch.optim.Adam((p for p in model.parameters() if p.requires_grad),lr=1e-3)
-        lossf=nn.CrossEntropyLoss()
-        Xt=torch.from_numpy(Xtr).long(); yt=torch.from_numpy(ytr)
-        best,bstate,pat=-1,None,0
+    def forward(self, x):
+        hidden = self.rnn(self.emb(x))[1][0]
+        return self.fc(self.drop(torch.cat([hidden[0], hidden[1]], dim=1)))
+
+
+def predict(model, X):
+    model.eval()
+    outputs = []
+    with torch.no_grad():
+        for start in range(0, len(X), 512):
+            outputs.append(model(torch.from_numpy(X[start:start + 512]).long().to(device)).argmax(1).cpu().numpy())
+    return np.concatenate(outputs)
+
+
+results = []
+predictions = {}
+for field_key in FIELDS:
+    token_lists = tokens_by_field[field_key]
+    X = np.zeros((len(token_lists), CAP), np.int32)
+    for i, ts in enumerate(token_lists):
+        for j, t in enumerate(ts):
+            X[i, j] = word_index.get(t, OOV)
+    for seed in (0, 1, 2):
+        Xtr, Xva, ytr, yva = train_test_split(X[~is_test], y[~is_test], test_size=0.05, stratify=y[~is_test], random_state=SEED + seed)
+        torch.manual_seed(700 + seed)
+        model = RNN(matrix, len(classes)).to(device)
+        optimizer = torch.optim.Adam((p for p in model.parameters() if p.requires_grad), lr=1e-3)
+        loss_fn = nn.CrossEntropyLoss()
+        Xtr_t = torch.from_numpy(Xtr).long()
+        ytr_t = torch.from_numpy(ytr)
+        best_f1, best_state, patience = -1, None, 0
         for epoch in range(15):
             model.train()
-            perm=torch.randperm(len(Xt),generator=torch.Generator().manual_seed(seed*313+epoch))
-            for b in range(0,len(perm),128):
-                sel=perm[b:b+128]; opt.zero_grad()
-                lossf(model(Xt[sel].to(device)),yt[sel].to(device)).backward(); opt.step()
-            f1=mf1(yva,predict(model,Xva))
-            if f1>best+1e-4: best,pat=f1,0; bstate={k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
+            perm = torch.randperm(len(Xtr_t), generator=torch.Generator().manual_seed(seed * 313 + epoch))
+            for start in range(0, len(perm), 128):
+                batch_idx = perm[start:start + 128]
+                optimizer.zero_grad()
+                loss_fn(model(Xtr_t[batch_idx].to(device)), ytr_t[batch_idx].to(device)).backward()
+                optimizer.step()
+            f1 = macro_f1(yva, predict(model, Xva))
+            if f1 > best_f1 + 1e-4:
+                best_f1, patience = f1, 0
+                best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
             else:
-                pat+=1
-                if pat>=2: break
-        model.load_state_dict(bstate)
-        pr=predict(model,X[te])
-        preds[(vk,seed)]=pr
-        np.savez(os.path.join(HERE,f'nhtsa_shared_preds_{vk}_bilstm_s{seed}.npz'),pred=pr,y=y[te])
-        res.append({"key":f"nhtsaS_{vk}_bilstm_s{seed}","f1":round(float(mf1(y[te],pr)),4)})
-        log(res[-1])
+                patience += 1
+                if patience >= 2:
+                    break
+        model.load_state_dict(best_state)
+        pred = predict(model, X[is_test])
+        predictions[(field_key, seed)] = pred
+        np.savez(os.path.join(HERE, f'nhtsa_shared_preds_{field_key}_bilstm_s{seed}.npz'), pred=pred, y=y[is_test])
+        results.append({"key": f"nhtsaS_{field_key}_bilstm_s{seed}", "f1": round(float(macro_f1(y[is_test], pred)), 4)})
+        log(results[-1])
 
-# paired randomisation between fields, per run, Holm over the family of 9
-rngp=np.random.default_rng(SEED)
-def paired(yy,pa,pb,n=5000):
-    d0=mf1(yy,pa)-mf1(yy,pb); cnt=0
+# paired randomisation between fields: swap the two predictions per record at random
+perm_rng = np.random.default_rng(SEED)
+
+
+def paired(labels, pred_a, pred_b, n=5000):
+    d0 = macro_f1(labels, pred_a) - macro_f1(labels, pred_b)
+    count = 0
     for _ in range(n):
-        sw=rngp.random(len(yy))<0.5
-        if abs(mf1(yy,np.where(sw,pb,pa))-mf1(yy,np.where(sw,pa,pb)))>=abs(d0)-1e-12: cnt+=1
-    return d0,(cnt+1)/(n+1)
-yy=y[te]; cons=[]
-for s in (0,1,2):
-    for a,b in [('summary','conseq'),('summary','remedy'),('remedy','conseq')]:
-        d,p=paired(yy,preds[(a,s)],preds[(b,s)])
-        cons.append({"contrast":f"shared bilstm s{s}: {a} vs {b}","delta":round(float(d),4),"p":round(float(p),4)})
-        log(cons[-1])
-cons_sorted=sorted(cons,key=lambda c:c["p"])
-m=len(cons_sorted)
-for i,c in enumerate(cons_sorted):
-    c["p_holm"]=round(min(1.0,max((m-j)*cons_sorted[j]["p"] for j in range(i+1))),4)
-json.dump({"results":res,"contrasts":cons},open(os.path.join(HERE,'control_nhtsa_shared.json'),'w'),indent=1)
-print("NHTSA_SHARED DONE",flush=True)
+        swap = perm_rng.random(len(labels)) < 0.5
+        if abs(macro_f1(labels, np.where(swap, pred_b, pred_a)) - macro_f1(labels, np.where(swap, pred_a, pred_b))) >= abs(d0) - 1e-12:
+            count += 1
+    return d0, (count + 1) / (n + 1)
+
+
+labels = y[is_test]
+contrasts = []
+for seed in (0, 1, 2):
+    for field_a, field_b in [('summary', 'conseq'), ('summary', 'remedy'), ('remedy', 'conseq')]:
+        delta, p = paired(labels, predictions[(field_a, seed)], predictions[(field_b, seed)])
+        contrasts.append({"contrast": f"shared bilstm s{seed}: {field_a} vs {field_b}", "delta": round(float(delta), 4), "p": round(float(p), 4)})
+        log(contrasts[-1])
+contrasts_sorted = sorted(contrasts, key=lambda c: c["p"])
+n_contrasts = len(contrasts_sorted)
+for i, contrast in enumerate(contrasts_sorted):
+    contrast["p_holm"] = round(min(1.0, max((n_contrasts - j) * contrasts_sorted[j]["p"] for j in range(i + 1))), 4)
+json.dump({"results": results, "contrasts": contrasts}, open(os.path.join(HERE, 'control_nhtsa_shared.json'), 'w'), indent=1)
+print("NHTSA_SHARED DONE", flush=True)

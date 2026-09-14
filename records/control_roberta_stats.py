@@ -1,31 +1,49 @@
-# Feeds Supplementary Table S19: paired contrasts over the stored RoBERTa predictions, run once all fifteen fine-tunes exist.
-"""Final paired contrasts for the RoBERTa suite, from stored predictions.
-Runs after all 15 fine-tunes. Emits control_roberta.json + ROBERTA DONE."""
-import json,os
+"""Paired contrasts for the RoBERTa runs, from stored predictions, once
+all fifteen fine-tunes exist: synopsis against narrative per seed on
+ASRS, and the three field pairs per seed on NHTSA. Reads
+control_roberta_partial.json and the roberta_preds_*.npz files here and
+writes results/records/control_roberta.json.
+Run: python3 control_roberta_stats.py"""
+import json
+import os
 import numpy as np
 from sklearn.metrics import f1_score
-HERE=os.path.dirname(os.path.abspath(__file__))
-ROOT=os.path.dirname(HERE)
-VIEWS=os.path.join(ROOT,'records'); NHTSA=os.path.join(ROOT,'nhtsa'); RESULTS=os.path.join(ROOT,'results')
-rngp=np.random.default_rng(20260802)
-def mf1c(yy,p): return f1_score(yy,p,average='macro')
-def paired(yy,pa,pb,n=5000):
-    d0=mf1c(yy,pa)-mf1c(yy,pb); cnt=0
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+RECORDS = os.path.join(ROOT, 'records')
+NHTSA = os.path.join(ROOT, 'nhtsa')
+RESULTS = os.path.join(ROOT, 'results')
+rng = np.random.default_rng(20260802)
+
+
+def macro_f1(yy, pred):
+    return f1_score(yy, pred, average='macro')
+
+
+def paired(yy, pred_a, pred_b, n=5000):
+    delta = macro_f1(yy, pred_a) - macro_f1(yy, pred_b)
+    count = 0
     for _ in range(n):
-        sw=rngp.random(len(yy))<0.5
-        if abs(mf1c(yy,np.where(sw,pb,pa))-mf1c(yy,np.where(sw,pa,pb)))>=abs(d0)-1e-12: cnt+=1
-    return round(float(d0),4),round((cnt+1)/(n+1),4)
-res=json.load(open(os.path.join(HERE,'control_roberta_partial.json')))
-cons=[]
-for s in (0,1,2):
-    a=np.load(os.path.join(HERE,f'roberta_preds_asrs_syn_s{s}.npz'))
-    b=np.load(os.path.join(HERE,f'roberta_preds_asrs_narr_s{s}.npz'))
-    d,p=paired(a['y'],a['pred'],b['pred'])
-    cons.append({"contrast":f"roberta s{s}: syn vs narr","delta":d,"p":p}); print(cons[-1],flush=True)
-for s in (0,1,2):
-    pr={vk:np.load(os.path.join(HERE,f'roberta_preds_nhtsa_{vk}_s{s}.npz')) for vk in ('summary','conseq','remedy')}
-    for x,z in (('summary','conseq'),('summary','remedy'),('remedy','conseq')):
-        d,p=paired(pr[x]['y'],pr[x]['pred'],pr[z]['pred'])
-        cons.append({"contrast":f"roberta nhtsa s{s}: {x} vs {z}","delta":d,"p":p}); print(cons[-1],flush=True)
-json.dump({"results":res,"contrasts":cons},open(os.path.join(RESULTS,'records','control_roberta.json'),'w'),indent=1)
-print("ROBERTA DONE",flush=True)
+        swap = rng.random(len(yy)) < 0.5
+        if abs(macro_f1(yy, np.where(swap, pred_b, pred_a)) - macro_f1(yy, np.where(swap, pred_a, pred_b))) >= abs(delta) - 1e-12:
+            count += 1
+    return round(float(delta), 4), round((count + 1) / (n + 1), 4)
+
+
+results = json.load(open(os.path.join(HERE, 'control_roberta_partial.json')))
+contrasts = []
+for seed in (0, 1, 2):
+    syn = np.load(os.path.join(HERE, f'roberta_preds_asrs_syn_s{seed}.npz'))
+    narr = np.load(os.path.join(HERE, f'roberta_preds_asrs_narr_s{seed}.npz'))
+    delta, p = paired(syn['y'], syn['pred'], narr['pred'])
+    contrasts.append({"contrast": f"roberta s{seed}: syn vs narr", "delta": delta, "p": p})
+    print(contrasts[-1], flush=True)
+for seed in (0, 1, 2):
+    preds = {field: np.load(os.path.join(HERE, f'roberta_preds_nhtsa_{field}_s{seed}.npz')) for field in ('summary', 'conseq', 'remedy')}
+    for left, right in (('summary', 'conseq'), ('summary', 'remedy'), ('remedy', 'conseq')):
+        delta, p = paired(preds[left]['y'], preds[left]['pred'], preds[right]['pred'])
+        contrasts.append({"contrast": f"roberta nhtsa s{seed}: {left} vs {right}", "delta": delta, "p": p})
+        print(contrasts[-1], flush=True)
+json.dump({"results": results, "contrasts": contrasts}, open(os.path.join(RESULTS, 'records', 'control_roberta.json'), 'w'), indent=1)
+print("ROBERTA DONE", flush=True)

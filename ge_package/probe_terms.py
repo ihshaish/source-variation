@@ -1,32 +1,39 @@
-"""P7 - cosine-neighbour probe terms for the manuscript's neighbours table.
-The TERMS list below is edited to taste; usage: python probe_terms.py
-Prints, per term: top-10 Avi2Vec neighbours + whether the term exists in the
-GloVe-200 vocabulary (and its GloVe neighbours where it does, if the full
-GloVe .txt is reachable via EMB_DIR)."""
+"""Prints, for each term in TERMS, its ten nearest Avi2Vec neighbours by
+cosine similarity and whether the term is in the GloVe-200 vocabulary.
+Reads ge_data/avi2vec.kv and, when EMB_DIR points at it, glove.6B.200d.txt.
+Edit TERMS before running. Run: python probe_terms.py
+"""
 import os
+
 from gensim.models import KeyedVectors
+
 from ge_lib import DATA
 
-TERMS = ["underfill", "keypanel", "blank", "flickering"]  # add a fault code etc.
+TERMS = ["underfill", "keypanel", "blank", "flickering"]
 
-kv = None
+avi2vec = None
 path = os.path.join(DATA, "avi2vec.kv")
 try:
-    kv = KeyedVectors.load(path, mmap="r")
+    avi2vec = KeyedVectors.load(path, mmap="r")
 except Exception:
-    kv = KeyedVectors.load_word2vec_format(path, binary=path.endswith(".bin"))
-emb_dir = os.environ.get("EMB_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "embeddings"))
+    avi2vec = KeyedVectors.load_word2vec_format(path, binary=path.endswith(".bin"))
+emb_dir = os.environ.get("EMB_DIR",
+                         os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "embeddings"))
 glove_vocab = set()
-gpath = os.path.join(emb_dir, "glove.6B.200d.txt")
-if os.path.exists(gpath):
-    with open(gpath, encoding="utf-8") as f:
+glove_path = os.path.join(emb_dir, "glove.6B.200d.txt")
+if os.path.exists(glove_path):
+    with open(glove_path, encoding="utf-8") as f:
         for line in f:
             glove_vocab.add(line.split(" ", 1)[0])
-for t in TERMS:
-    print(f"\n== {t} ==")
-    if t in kv:
-        for w, s in kv.most_similar(t, topn=10):
-            print(f"  {w:<20} {s:.2f}")
+for term in TERMS:
+    print(f"\n== {term} ==")
+    if term in avi2vec:
+        for neighbour, score in avi2vec.most_similar(term, topn=10):
+            print(f"  {neighbour:<20} {score:.2f}")
     else:
         print("  (not in Avi2Vec vocabulary)")
-    print(f"  in GloVe-200 vocabulary: {t in glove_vocab if glove_vocab else 'unknown (GloVe file not found)'}")
+    if glove_vocab:
+        in_glove = term in glove_vocab
+    else:
+        in_glove = "unknown (GloVe file not found)"
+    print(f"  in GloVe-200 vocabulary: {in_glove}")

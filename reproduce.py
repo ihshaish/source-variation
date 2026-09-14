@@ -1,16 +1,16 @@
-"""The script below will print paper's ASRS numbers next to what shows in results/.
+"""Checks the paper's headline numbers against the results shipped in results/.
 
-No training or downloads required - so this just reads the two results files and checks
-that every headline claim in the article matches them. Run it after cloning:
+Nothing trains and nothing downloads. Each line prints the value quoted in the
+paper, the value read from results/, and OK or MISMATCH. If you ever see
+MISMATCH, something has drifted; please tell us:
+
+- hisham.ihshaish@uwe.ac.uk
+- peter.mayhew@geaerospace.com
 
     python3 reproduce.py
-
-Each line here will essentially show the paper's value, the reported value, & an OK or MISMATCH.
-If you ever see MISMATCH, something has drifted - please tell us:
-- hisham.ihshaish@uwe.ac.uk (Hisham)
-- peter.mayhew@geaerospace.com (Peter)
 """
-import json, os
+import json
+import os
 
 here = os.path.dirname(os.path.abspath(__file__))
 stats = json.load(open(os.path.join(here, "results", "asrs_stats.json")))
@@ -20,31 +20,31 @@ checks = []
 def claim(label, paper, shipped, tol=0.0006):
     checks.append((label, paper, shipped, abs(paper - shipped) <= tol))
 
-# held-out macro-F1 (paper Table 6 / Supplementary Table S4)
+# ASRS held-out macro-F1 by configuration
 for key, val in [("glove200_bilstm", 0.860), ("glove300_bilstm", 0.862),
                  ("w2vasrs_bilstm", 0.881), ("fasttext_bigru", 0.879),
                  ("w2vasrs_bigru", 0.880), ("glove200_cnn", 0.869),
                  ("glove200_meanmlp", 0.836), ("glove50_bilstm", 0.829)]:
     claim(f"held-out {key}", val, cfg[key]["test_macro_f1"])
 
-# paired contrasts the text leans on (Supplementary Table S3)
+# ASRS paired contrasts quoted in the text
 def find(family, name):
     return next(c for c in con if c["family"] == family and c["contrast"] == name)
 c = find("A-emb", "bilstm: glove200 vs w2vasrs")
 claim("in-domain gain (BiLSTM, w2v vs glove200)", -0.020, c["delta_f1"], 0.0006)
-assert c["p_holm"] < 0.001, "w2v gain should be significant"
+assert c["p_holm"] < 0.001, "word2vec gain is significant"
 c = find("C-subword", "bilstm: fasttext vs w2vasrs")
 claim("subword vs word-level (BiLSTM)", -0.015, c["delta_f1"], 0.0006)
 c = find("C-subword", "bigru: fasttext vs w2vasrs")
 assert abs(c["delta_f1"]) <= 0.005 and c["p_holm"] > 0.05, "BiGRU subword null"
 c = find("B-arch", "w2vasrs: bilstm vs bigru")
-assert abs(c["delta_f1"]) <= 0.002 and c["p_holm"] > 0.05, "cell gap gone at best embedding"
+assert abs(c["delta_f1"]) <= 0.002 and c["p_holm"] > 0.05, "BiLSTM and BiGRU agree at the best embedding"
 c = find("B-arch", "glove50: bilstm vs bigru")
 claim("cell gap at weakest embedding", -0.032, c["delta_f1"], 0.0006)
 c = find("D-sequence", "glove200: bilstm vs meanmlp")
 claim("pooling cost (ASRS)", 0.025, c["delta_f1"], 0.0006)
 
-# order and cap probes (paper section on boundary conditions)
+# token-order shuffle and 512-token cap
 abl = [json.loads(l) for l in open(os.path.join(here, "results", "ablation_results.jsonl"))]
 shuf = [r["test_macro_f1"] for r in abl if r["key"].startswith("shuffle_final")]
 base = 0.859  # three-run mean of the unshuffled BiLSTM/GloVe-200 finals
@@ -54,7 +54,7 @@ cap = [r["test_macro_f1"] for r in abl if r["key"].startswith("cap512_final")]
 worstc = max(abs(0.860 - cv) for cv in cap)
 checks.append(("512-cap change <= 0.007 (paper)", 0.007, round(worstc, 4), worstc <= 0.007))
 
-# --- matched views (paper section "Record views on public safety reports") ---
+# ASRS matched records: narrative against synopsis
 v = json.load(open(os.path.join(here, "results", "records", "records_stats.json")))
 seq = [c for c in v["contrasts"] if c["family"] == "view" and "tfidf" not in c["contrast"]]
 ds = [-c["delta_f1"] for c in seq]  # stored narr-syn; paper reports syn advantage
@@ -63,16 +63,16 @@ checks.append(("synopsis > narrative, all 6 sequence runs in 0.011-0.021",
                len(seq) == 6 and all(0.011 <= round(d, 3) <= 0.021 for d in ds)
                and all(c["p_holm"] <= 0.0013 for c in seq)))
 tf = next(c for c in v["contrasts"] if "tfidf" in c["contrast"])
-checks.append(("TF-IDF view contrast null (p=0.78)", 0.78, tf["p"], abs(tf["p"] - 0.7806) < 0.01))
+checks.append(("TF-IDF record contrast null (p=0.78)", 0.78, tf["p"], abs(tf["p"] - 0.7806) < 0.01))
 em = json.load(open(os.path.join(here, "results", "records", "echo_mask.json")))
-checks.append(("masked synopsis still beats plain narrative", 0.8711, em["syn"]["echo_masked"],
+checks.append(("masked synopsis (paper 0.887) still above plain narrative (0.871)", 0.887, em["syn"]["echo_masked"],
                em["syn"]["echo_masked"] > em["narr"]["plain"]))
 dual = [c for c in v["contrasts"] if c["family"] == "author"]
 dd = [c["delta_f1"] for c in dual]
 checks.append(("raw supplemental deficit 0.165-0.187, all p=0.0001",
                "0.165-0.187", f"{min(dd)}-{max(dd)}",
                all(0.165 <= round(d, 3) <= 0.187 for d in dd) and all(c["p"] == 0.0001 for c in dual)))
-aa = json.load(open(os.path.join(here, "results", "records", "author_analysis.json")))
+aa = json.load(open(os.path.join(here, "results", "records", "dual_report_length.json")))
 checks.append(("matched-length subset: all paired tests null (p 0.30-0.93)",
                ">=0.30", min(m["p"] for m in aa["matched"]),
                all(m["p"] >= 0.30 for m in aa["matched"])))
@@ -86,11 +86,11 @@ syn_sig = sum(1 for r in rev if r["view"] == "syn" and r["tfidf_minus_bilstm"] <
 checks.append(("ranking reversal: sig 2/3 each direction", "2+2", f"{narr_sig}+{syn_sig}",
                narr_sig >= 2 and syn_sig >= 2))
 ens = it["ensemble_holm"]
-checks.append(("ensemble beats better single view, Holm <= 0.0104, all 6",
+checks.append(("ensemble beats the better single record, Holm <= 0.0104, all 6",
                "<=0.0104", max(e["p_holm"] for e in ens),
                all(e["delta"] > 0 and e["p_holm"] <= 0.0104 for e in ens)))
 
-# --- shared-representation controls (post hoc, review round) ---
+# shared-representation controls
 cg = json.load(open(os.path.join(here, "results", "records", "control_glove_D.json")))
 gi = cg["interaction_glove"]
 checks.append(("shared-GloVe D positive all runs, CI excludes zero in 2/3",
@@ -106,7 +106,7 @@ checks.append(("shared-w2v NHTSA: remedy-consequence gap closes (|d| <= 0.03)",
                "<=0.03", max(abs(c["delta"]) for c in rc),
                all(abs(c["delta"]) <= 0.03 for c in rc)))
 
-# --- NHTSA purpose hierarchy (v2 = duplicate-confined; 3m = class-vocab mask) ---
+# NHTSA field hierarchy, plain and with the class-vocabulary mask
 n2 = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa_task_contrasts.json")))
 sc = [c["delta"] for c in n2 if "summary vs conseq" in c["contrast"]]
 sr = [c["delta"] for c in n2 if "summary vs remedy" in c["contrast"]]
@@ -124,7 +124,7 @@ checks.append(("masked hierarchy: 12/12 Holm-significant, summary>remedy 0.112-0
                all(c["p_holm"] <= 0.0024 for c in n3) and all(0.112 <= round(d, 3) <= 0.166 for d in msr)))
 
 
-# --- GE headline numbers, from the metrics exported out of the secure environment (results/ge/) ---
+# GE headline numbers, from the exported metrics in results/ge/
 ge = [json.loads(l) for l in open(os.path.join(here, "results", "ge", "ge_results.jsonl"))]
 def gemean(field, emb="avi2vec", model="bilstm"):
     v = [r["test_macro_f1"] for r in ge if r["key"].startswith(f"final_random_{field}_{emb}_{model}_s") and r["key"].count("_") == 5]
@@ -134,21 +134,21 @@ cust, tech, rep = gemean("customer"), gemean("technician"), gemean("repair")
 claim("GE customer field (Avi2Vec BiLSTM, three-training mean)", 0.327, cust)
 claim("GE technician field", 0.783, tech)
 claim("GE repair-action field", 0.910, rep)
-claim("GE customer -> technician difference", 0.456, tech - cust)
-claim("GE customer -> repair action difference", 0.583, rep - cust)
+claim("GE customer to technician difference", 0.456, tech - cust)
+claim("GE customer to repair action difference", 0.583, rep - cust)
 claim("GE Avi2Vec vs GloVe-200 on repair action", 0.049, rep - gemean("repair", "glove200"))
 claim("GE sequence vs mean pooling (GloVe-200, repair action)", 0.092, gemean("repair", "glove200") - gemean("repair", "glove200", "meanmlp"))
 lk = json.load(open(os.path.join(here, "results", "ge", "leakage_report.json")))
 claim("GE keyword rule over curated outcome terms, repair action", 0.292, lk["keyword_baseline_macro_f1"]["repair"])
 
-# --- Table 2 seed-averaged differences with joint record-resampling intervals ---
+# Table 2: differences averaged over trainings, with joint record-resampling intervals
 sa = json.load(open(os.path.join(here, "results", "records", "seedavg.json")))
 claim("Table 2 ASRS synopsis - narrative, BiLSTM mean", 0.015, sa["syn_narr_bilstm"]["mean"])
 claim("Table 2 ASRS synopsis - narrative, RoBERTa mean", 0.015, sa["syn_narr_roberta"]["mean"])
 claim("Table 2 cross-record transfer T, mean", 0.179, sa["dual_raw"]["mean"])
 claim("Table 2 comparable-length subset, mean", 0.010, sa["dual_matched"]["mean"])
 
-# --- five redrawn negative samples (Supplementary Table S14) ---
+# five redrawn negative samples
 sd = json.load(open(os.path.join(here, "results", "records", "sensitivity_draws.json")))
 se = json.load(open(os.path.join(here, "results", "records", "sensitivity_extra.json")))
 means = []
@@ -160,7 +160,7 @@ checks.append(("redraws: BiLSTM synopsis advantage positive in every draw, means
                "0.008-0.022", f"{round(min(means),3)}-{round(max(means),3)}",
                all(m > 0 for m in means) and 0.008 <= round(min(means), 3) and round(max(means), 3) <= 0.022))
 
-# --- NHTSA temporal split (Supplementary Table S17) ---
+# NHTSA temporal split
 tt = json.load(open(os.path.join(here, "results", "nhtsa", "nhtsa_temporal_tests.json")))
 ts = tt["scores"]
 for f, val in [("summary", 0.718), ("conseq", 0.651), ("remedy", 0.592)]:
@@ -170,20 +170,20 @@ checks.append(("temporal: all six declared BiLSTM summary contrasts positive and
                6, sum(1 for c in fam if c["delta"] > 0 and c["p_holm"] < 0.05),
                len(fam) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in fam)))
 
-# --- NHTSA near-duplicate grouped split (Supplementary Table S18) ---
+# NHTSA near-duplicate grouped split
 nd = {r["key"]: r["f1"] for r in json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_results.json")))}
 for f, val in [("summary", 0.731), ("conseq", 0.644), ("remedy", 0.584)]:
     claim(f"near-duplicate split, BiLSTM {f} mean", val, sum(nd[f"nhtsa_{f}_bilstm_s{s}"] for s in range(3)) / 3)
 nc = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_contrasts.json")))
 bil = [c for c in nc if c["contrast"].startswith("bilstm") and "summary vs" in c["contrast"]]
-checks.append(("near-duplicate: all six BiLSTM summary contrasts positive and Holm-significant (registered criterion)",
+checks.append(("near-duplicate: all six BiLSTM summary contrasts positive and Holm-significant (the criterion fixed before the run)",
                6, sum(1 for c in bil if c["delta"] > 0 and c["p_holm"] < 0.05),
                len(bil) == 6 and all(c["delta"] > 0 and c["p_holm"] < 0.05 for c in bil)))
 ng = json.load(open(os.path.join(here, "results", "nhtsa", "neardup", "nhtsa_neardup_grouping.json")))
 claim("near-duplicate grouping: campaigns in multi-member groups", 9450, ng["campaigns_in_multi_groups"], 0)
 claim("near-duplicate grouping: largest transitive group", 4418, ng["largest_group"], 0)
 
-# --- RoBERTa suite (Supplementary Tables S19-S20) ---
+# RoBERTa fine-tunes
 rb = json.load(open(os.path.join(here, "results", "records", "control_roberta.json")))
 rres = {r["key"]: r["f1"] for r in rb["results"]}
 claim("RoBERTa ASRS synopsis - narrative, mean over seeds", 0.015,

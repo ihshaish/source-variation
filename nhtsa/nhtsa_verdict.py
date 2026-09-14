@@ -1,14 +1,20 @@
-"""Go/no-go quantities from crawled campaigns, per the registered criteria:
->=8 top-level component classes with enough support (scaled to the pilot
-window), median field lengths >=15 tokens."""
-import json,os,re,statistics,sys
+"""Prints the quantities that decide whether the crawled campaigns support
+the task: the number of top-level component classes and the support of the
+fourteen largest, and the median token length and empty count of each of
+the summary, consequence and remedy fields. Reads nhtsa_campaigns.jsonl.
+Run: python3 nhtsa_verdict.py"""
+import json
+import os
+import re
+import statistics
 from collections import Counter
-TOKEN_RE=re.compile(r"[a-z][a-z0-9/-]+")
-rows=[json.loads(l) for l in open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'nhtsa_campaigns.jsonl'))]
-print("campaigns:",len(rows))
-top=Counter((r['Component'] or '').split(':')[0].split(',')[0].strip() for r in rows)
-print("top-level component classes:",len(top))
-for k,v in top.most_common(14): print(f"  {v:4d}  {k}")
-for f in ('Summary','Consequence','Remedy'):
-    L=[len(TOKEN_RE.findall((r[f] or '').lower())) for r in rows]
-    print(f"{f}: median {statistics.median(L):.0f} tokens, empty {sum(1 for x in L if x==0)}")
+TOKEN_RE = re.compile(r"[a-z][a-z0-9/-]+")
+records = [json.loads(line) for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nhtsa_campaigns.jsonl'))]
+print("campaigns:", len(records))
+top_counts = Counter((record['Component'] or '').split(':')[0].split(',')[0].strip() for record in records)
+print("top-level component classes:", len(top_counts))
+for name, count in top_counts.most_common(14):
+    print(f"  {count:4d}  {name}")
+for field in ('Summary', 'Consequence', 'Remedy'):
+    lengths = [len(TOKEN_RE.findall((record[field] or '').lower())) for record in records]
+    print(f"{field}: median {statistics.median(lengths):.0f} tokens, empty {sum(1 for x in lengths if x == 0)}")
