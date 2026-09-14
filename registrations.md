@@ -97,9 +97,9 @@ training 2 at 0.840), which supports treating them as ordinary training
 variability.
 
 2. NHTSA temporal split. The same 16-class task, split by the campaign year
-encoded in the campaign number: train on 2000 to 2021, test on 2022 to 2026
-(3681 campaigns, 22.1%, the year boundary closest to the 20% policy, chosen
-from the year distribution before any model was run). Duplicate groups that
+encoded in the campaign number: train on 2000 to 2021, test on 2022 to 2026.
+The test side has 3681 campaigns (22.1%), the year boundary closest to the
+20% policy, chosen from the year distribution before any model was run. Duplicate groups that
 span the boundary lose their test-side members. Per field: word TF-IDF and
 a BiLSTM over field word2vec fitted on the temporal training text, three
 trainings. Statistics: summary minus consequence and summary minus remedy
@@ -136,20 +136,21 @@ have Jaccard similarity of 0.80 or more (same tokeniser, empty fields
 ignored). Groups are shuffled with the same seed (20260802) and filled into
 the test side until 20% of campaigns is reached, as before. Everything else
 stays fixed: the 16 classes, field word2vec trained on the training side,
-TF-IDF with logistic regression, the BiLSTM settings, macro-F1 on the
-held-out side, paired prediction-swap tests with 5000 permutations for the
-three field pairs per training, Holm within the twelve-contrast family.
+TF-IDF with logistic regression, the BiLSTM settings and macro-F1 on the
+held-out side. The tests are the paired prediction-swap tests with 5000
+permutations for the three field pairs per training, Holm-corrected within
+the twelve-contrast family.
 RoBERTa is not re-run.
 
 Criterion: all six BiLSTM summary contrasts (summary minus consequence,
 summary minus remedy, three trainings) positive and Holm-significant at
 0.05, and both TF-IDF summary contrasts positive. The consequence-remedy
 ordering is reported descriptively and is not part of the criterion.
-Interpretation fixed in advance: criterion met, the summary-first hierarchy
-holds under near-duplicate grouping and is reported in one sentence of the
-Results, one supplement table and one status row; criterion not met, the
-same three places report which contrasts weakened and the Discussion gains
-a sentence on template overlap. Either way the group count, the number of
+Interpretation fixed in advance. If the criterion is met, the summary-first
+hierarchy holds under near-duplicate grouping and is reported in one
+sentence of the Results, one supplement table and one status row. If it is
+not met, the same three places report which contrasts weakened and the
+Discussion gains a sentence on template overlap. Either way the group count, the number of
 campaigns in multi-member groups and the change in train and test sizes are
 printed.
 

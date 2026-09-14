@@ -86,10 +86,10 @@ paper.
 # Addendum (registered before tabulation): matched records inside the corpora we already hold
 
 The MaintNet no-go settled the candidates reviewed so far; the question
-itself stayed open. A wider survey, on the criteria of several records per
-event, stated target provenance, public availability, scale after
-de-duplication, records that are not derived from one another, and a
-distinct contribution to the study, leaves two experimental parts, and no
+itself stayed open. A wider survey was run on six criteria: several
+records per event, stated target provenance, public availability, scale
+after de-duplication, records that are not derived from one another, and a
+distinct contribution to the study. It leaves two experimental parts, and no
 more than two regardless of the results.
 
 ## Part A: ASRS matched records (data already in the paper)
@@ -101,9 +101,9 @@ with logistic regression; BiLSTM over GloVe-200; BiLSTM over word2vec
 trained on the training partition of the respective record. Three seeds and
 paired held-out tests as in the paper.
 Go or no-go for A1: the median 3-shingle containment of the synopsis in its
-own narrative is at most 0.8 (above that the synopsis would count as an
-extract of the narrative and the part is dropped), and the median synopsis
-length is at least 15 tokens.
+own narrative is at most 0.8, and the median synopsis length is at least 15
+tokens. Above 0.8 the synopsis would count as an extract of the narrative
+and the part is dropped.
 
 A2, reporter 1 against reporter 2. Dual-report events only: one model,
 trained on primary narratives as in the paper, evaluated twice on each
