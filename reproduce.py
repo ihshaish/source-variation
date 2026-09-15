@@ -1,4 +1,4 @@
-"""Checks the paper's headline numbers against the results shipped in results/.
+"""HEre we check the paper's headline numbers against the results shipped in results/.
 
 Nothing trains and nothing downloads. Each line prints the value quoted in the
 paper, the value read from results/, and OK or MISMATCH. If you ever see
