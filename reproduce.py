@@ -1,7 +1,7 @@
 """HEre we check the paper's headline numbers against the results shipped in results/.
 
-Nothing trains and nothing downloads. Each line prints the value quoted in the
-paper, the value read from results/, and OK or MISMATCH. If you ever see
+Nothing trains/downloads! Each line prints the value quoted in the
+paper, the value read from results/, & OK or MISMATCH - If you see
 MISMATCH, something has drifted; please tell us:
 
 - hisham.ihshaish@uwe.ac.uk
