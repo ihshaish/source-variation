@@ -2,7 +2,7 @@
 
 Code and results for "The record is part of the task: matched-record
 evaluation of text classifiers across maintenance, safety and recall
-reporting", submitted to Reliability Engineering & System Safety.
+reporting", submitted to Computers & Industrial Engineering.
 
 The study compares classifiers that read different records of the same
 cases, with the cases, labels and split held fixed. Three systems: GE
