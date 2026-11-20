@@ -1,7 +1,7 @@
 """Trains one configuration on the GE task.
 
 python ge_train.py --field repair --emb avi2vec --arch bilstm
-        [--split random] [--mask-file masks/vdelta.txt] [--smoke]
+        [--split random] [--mask-file masks/vdelta.txt] [--smoke] [--no-cv]
 
 field: customer | technician | repair | sequential
 emb:   glove50 | glove100 | glove200 | glove300 | avi2vec | fasttext_ge | w2v_ge
@@ -10,9 +10,11 @@ mask-file: newline-separated tokens replaced by the OOV vector before
   encoding; the mask file name becomes part of the result key.
 
 Runs ten-fold cross-validation in the training partition and three final
-seeds on the held-out set. Appends to ge_results.jsonl under GE_RES, one
-line per key and never twice for the same key, and saves the per-record
-prediction arrays as preds_<key>_s<seed>.npz (integers only, no text).
+seeds on the held-out set. With --no-cv only the final seeds run, and
+their held-out predictions are the ones a full run gives. Appends to
+ge_results.jsonl under GE_RES, one line per key and never twice for the
+same key, and saves the per-record prediction arrays as
+preds_<key>_s<seed>.npz (integers only, no text).
 """
 import argparse
 import json
@@ -36,6 +38,7 @@ def main():
     parser.add_argument("--split", default="random")
     parser.add_argument("--mask-file", default=None)
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--no-cv", action="store_true")
     args = parser.parse_args()
 
     mask = None
@@ -65,6 +68,8 @@ def main():
 
     folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=GLOBAL_SEED)
     for fold, (train_index, eval_index) in enumerate(folds.split(Xtr_all, ytr_all)):
+        if args.no_cv:
+            break
         key = f"{key_prefix}cv_{base_key}_f{fold}"
         if key in done:
             continue

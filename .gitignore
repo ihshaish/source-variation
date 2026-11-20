@@ -10,3 +10,8 @@ records/records_task.jsonl.gz
 records/pool_records.jsonl.gz
 nhtsa/nhtsa_campaigns.jsonl
 .DS_Store
+ge_package/synthetic/
+ge_package/results_contrasts/
+ge_package/private/
+ge_package/masks/
+ge_package/_selftest/

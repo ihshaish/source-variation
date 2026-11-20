@@ -2,7 +2,7 @@
 
 Code and results for "The record is part of the task: matched-record
 evaluation of text classifiers across maintenance, safety and recall
-reporting", submitted to Computers & Industrial Engineering.
+reporting", submitted to Big Data and Cognitive Computing.
 
 The study compares classifiers that read different records of the same
 cases, with the cases, labels and split held fixed. Three systems: GE
@@ -29,8 +29,10 @@ stored value, 54 checks. No training, no downloads.
 - nhtsa/ runs from the snapshot shipped in the repository.
 - ge_package/ ran inside GE Aerospace. The records are proprietary and
   cannot be shared, and so are the Avi2Vec vectors trained on them. The
-  package ships with a self-test on invented records. results/ge/ holds the
-  exported metrics. Nothing under results/ contains record text.
+  package ships with a self-test on invented records, and with a generator
+  of synthetic records and a container that runs the scripts on them.
+  results/ge/ holds the exported metrics. Nothing under results/ contains
+  record text.
 
 ## ASRS data
 
@@ -91,6 +93,10 @@ python3 control_roberta_narr.py <seed> # RoBERTa: one narrative fine-tune per pr
 python3 control_roberta_stats.py   # paired contrasts over the RoBERTa predictions
 python3 control_roberta_declared.py    # the three RoBERTa contrasts declared in advance
 python3 seedavg_and_threshold.py   # Table 2 rows; needs the RoBERTa and NHTSA runs
+python3 truncation_and_transfer.py # length caps, cap-512 refit, RoBERTa against BiLSTM, transfer by length ratio, shared embedding
+python3 other_tasks.py tfidf       # synopsis against narrative on the other primary-problem tasks
+python3 other_tasks.py bilstm      # the same with the GloVe-200 BiLSTM, tasks of 400 records or more
+python3 other_tasks_summary.py     # summary of other_tasks.jsonl
 ```
 
 records_task.jsonl.gz (53 MB) and the negative-draw pool (107 MB) are not
@@ -133,6 +139,9 @@ keyword rule (leakage_report.json), the duplicate-grouped splits
 ge_results.jsonl also carries rows from the initial implementation: the
 10-fold means of Table S8 and the transformer trained from scratch. That
 code and the training-stability summary are not part of this package.
+ge_specification.md lists the further GE contrasts, specified on 15
+November 2026 before they were run; ge_package/ge_contrasts.py computes
+them.
 
 ## Scripts and outputs
 
@@ -168,7 +177,8 @@ same file registered the ASRS matched records and the NHTSA task.
 registrations.md records the analyses declared later, each with the date
 written, the criterion fixed in advance and the outcome. Those entries were
 written in our working folder before each run and copied here afterwards;
-the git timestamps of this repository are later than the runs.
+the git timestamps of this repository are later than the runs. The same
+holds for ge_specification.md.
 
 | analysis | dataset | status in the paper |
 |---|---|---|
@@ -208,5 +218,5 @@ in the paper depends on a run being bit-identical.
 
 Ihshaish, H., Mayhew, P., Zayet, T. M. A. and Del Amo, A. The record is part
 of the task: matched-record evaluation of text classifiers across
-maintenance, safety and recall reporting. Submitted to Computers in
-Industry, 2026. Code and results: https://github.com/ihshaish/source-variation.
+maintenance, safety and recall reporting. Submitted to Big Data and
+Cognitive Computing, 2026. Code and results: https://github.com/ihshaish/source-variation.

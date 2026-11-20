@@ -1,0 +1,21 @@
+{
+  "_note": "Template. Complete with domain knowledge before ge_naming_audit.py runs, starting from private/term_candidates.txt written by ge_terms.py. assemblies: every word, abbreviation and part number that names an assembly, lower case, one token per entry. Symptom words stay out: they are evidence and remain in the text. class_parts: the assemblies each label id stands for, as in label_map.json. references (optional): tokens containing the marker and a digit are added to an assembly when they carry one of its document numbers after the document prefix or start with one of its part-number prefixes, and to other_references otherwise.",
+  "assemblies": {
+    "processor": ["processor"],
+    "keypanel": ["keypanel", "key-panel"]
+  },
+  "no_fault": ["nff", "no-fault-found"],
+  "replacement_verbs": ["replaced", "changed", "fitted", "swapped", "installed", "renewed", "exchanged"],
+  "class_parts": {
+    "0": ["processor"],
+    "1": ["keypanel"],
+    "2": ["processor", "keypanel"],
+    "3": []
+  },
+  "references": {
+    "marker": "doc",
+    "document_prefix": "doc-00-",
+    "document_numbers": {"processor": [], "keypanel": []},
+    "part_number_prefixes": {"processor": [], "keypanel": []}
+  }
+}

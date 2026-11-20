@@ -1,0 +1,445 @@
+{
+ "tfidf": {
+  "tasks_with_result": 17,
+  "tasks_skipped": [],
+  "positive_mean": 8,
+  "ci_above_zero": [
+   "Ambiguous"
+  ],
+  "ci_below_zero": [
+   "Chart Or Publication",
+   "Weather"
+  ],
+  "median_delta": 0.0,
+  "range_delta": [
+   -0.0718,
+   0.0185
+  ],
+  "heldout_size_range": [
+   14,
+   37932
+  ],
+  "per_task": {
+   "Logbook Entry": {
+    "n_heldout": 14,
+    "narr": 1.0,
+    "syn": 0.9282,
+    "delta": -0.0718,
+    "ci95": [
+     -0.2456,
+     0.0
+    ]
+   },
+   "Software and Automation": {
+    "n_heldout": 14,
+    "narr": 0.8542,
+    "syn": 0.8542,
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "Incorrect / Not Installed / Unavailable Part": {
+    "n_heldout": 68,
+    "narr": 0.8669,
+    "syn": 0.8674,
+    "delta": 0.0005,
+    "ci95": [
+     -0.0589,
+     0.0589
+    ]
+   },
+   "MEL": {
+    "n_heldout": 96,
+    "narr": 0.9583,
+    "syn": 0.9687,
+    "delta": 0.0104,
+    "ci95": [
+     0.0,
+     0.0322
+    ]
+   },
+   "Staffing": {
+    "n_heldout": 106,
+    "narr": 0.9056,
+    "syn": 0.8962,
+    "delta": -0.0094,
+    "ci95": [
+     -0.0572,
+     0.0384
+    ]
+   },
+   "Manuals": {
+    "n_heldout": 142,
+    "narr": 0.9012,
+    "syn": 0.9014,
+    "delta": 0.0002,
+    "ci95": [
+     -0.0494,
+     0.0514
+    ]
+   },
+   "Equipment / Tooling": {
+    "n_heldout": 190,
+    "narr": 0.8361,
+    "syn": 0.8259,
+    "delta": -0.0102,
+    "ci95": [
+     -0.0625,
+     0.0408
+    ]
+   },
+   "Airspace Structure": {
+    "n_heldout": 490,
+    "narr": 0.8245,
+    "syn": 0.8367,
+    "delta": 0.0122,
+    "ci95": [
+     -0.0184,
+     0.0449
+    ]
+   },
+   "Environment - Non Weather Related": {
+    "n_heldout": 1044,
+    "narr": 0.8322,
+    "syn": 0.8409,
+    "delta": 0.0087,
+    "ci95": [
+     -0.014,
+     0.0306
+    ]
+   },
+   "Chart Or Publication": {
+    "n_heldout": 1052,
+    "narr": 0.8707,
+    "syn": 0.8346,
+    "delta": -0.0361,
+    "ci95": [
+     -0.0599,
+     -0.0125
+    ]
+   },
+   "ATC Equipment / Nav Facility / Buildings": {
+    "n_heldout": 1154,
+    "narr": 0.8865,
+    "syn": 0.8795,
+    "delta": -0.007,
+    "ci95": [
+     -0.0235,
+     0.0112
+    ]
+   },
+   "Airport": {
+    "n_heldout": 1834,
+    "narr": 0.8539,
+    "syn": 0.8457,
+    "delta": -0.0082,
+    "ci95": [
+     -0.0246,
+     0.0077
+    ]
+   },
+   "Weather": {
+    "n_heldout": 2662,
+    "narr": 0.8986,
+    "syn": 0.8816,
+    "delta": -0.017,
+    "ci95": [
+     -0.0299,
+     -0.0038
+    ]
+   },
+   "Company Policy": {
+    "n_heldout": 3106,
+    "narr": 0.8412,
+    "syn": 0.8496,
+    "delta": 0.0084,
+    "ci95": [
+     -0.0032,
+     0.0212
+    ]
+   },
+   "Procedure": {
+    "n_heldout": 3258,
+    "narr": 0.8757,
+    "syn": 0.8704,
+    "delta": -0.0053,
+    "ci95": [
+     -0.0146,
+     0.0049
+    ]
+   },
+   "Ambiguous": {
+    "n_heldout": 4774,
+    "narr": 0.6885,
+    "syn": 0.707,
+    "delta": 0.0185,
+    "ci95": [
+     0.0048,
+     0.0329
+    ]
+   },
+   "Human Factors": {
+    "n_heldout": 37932,
+    "narr": 0.8011,
+    "syn": 0.8035,
+    "delta": 0.0024,
+    "ci95": [
+     -0.0017,
+     0.0067
+    ]
+   }
+  }
+ },
+ "bilstm": {
+  "tasks_with_result": 13,
+  "tasks_skipped": [
+   "Logbook Entry",
+   "Software and Automation",
+   "Incorrect / Not Installed / Unavailable Part"
+  ],
+  "positive_mean": 12,
+  "ci_above_zero": [
+   "Staffing",
+   "Airspace Structure",
+   "Environment - Non Weather Related",
+   "ATC Equipment / Nav Facility / Buildings",
+   "Airport",
+   "Weather",
+   "Company Policy",
+   "Procedure",
+   "Ambiguous"
+  ],
+  "ci_below_zero": [],
+  "median_delta": 0.0322,
+  "range_delta": [
+   -0.0212,
+   0.1422
+  ],
+  "heldout_size_range": [
+   96,
+   4774
+  ],
+  "per_task": {
+   "MEL": {
+    "n_heldout": 96,
+    "narr": 0.639,
+    "syn": 0.7428,
+    "delta": 0.1038,
+    "ci95": [
+     -0.0022,
+     0.2106
+    ],
+    "per_training": [
+     0.0021,
+     0.1188,
+     0.1904
+    ],
+    "all_trainings_positive": true
+   },
+   "Staffing": {
+    "n_heldout": 106,
+    "narr": 0.6665,
+    "syn": 0.8087,
+    "delta": 0.1422,
+    "ci95": [
+     0.046,
+     0.2432
+    ],
+    "per_training": [
+     0.1257,
+     0.2148,
+     0.0863
+    ],
+    "all_trainings_positive": true
+   },
+   "Manuals": {
+    "n_heldout": 142,
+    "narr": 0.7905,
+    "syn": 0.7693,
+    "delta": -0.0212,
+    "ci95": [
+     -0.0779,
+     0.0332
+    ],
+    "per_training": [
+     0.0009,
+     -0.132,
+     0.0673
+    ],
+    "all_trainings_positive": false
+   },
+   "Equipment / Tooling": {
+    "n_heldout": 190,
+    "narr": 0.7717,
+    "syn": 0.7815,
+    "delta": 0.0098,
+    "ci95": [
+     -0.0416,
+     0.0624
+    ],
+    "per_training": [
+     0.0623,
+     -0.0325,
+     -0.0004
+    ],
+    "all_trainings_positive": false
+   },
+   "Airspace Structure": {
+    "n_heldout": 490,
+    "narr": 0.7194,
+    "syn": 0.7729,
+    "delta": 0.0535,
+    "ci95": [
+     0.0168,
+     0.0888
+    ],
+    "per_training": [
+     0.0469,
+     0.1022,
+     0.0113
+    ],
+    "all_trainings_positive": true
+   },
+   "Environment - Non Weather Related": {
+    "n_heldout": 1044,
+    "narr": 0.7505,
+    "syn": 0.818,
+    "delta": 0.0674,
+    "ci95": [
+     0.0425,
+     0.0916
+    ],
+    "per_training": [
+     0.073,
+     0.0785,
+     0.0508
+    ],
+    "all_trainings_positive": true
+   },
+   "Chart Or Publication": {
+    "n_heldout": 1052,
+    "narr": 0.7665,
+    "syn": 0.7926,
+    "delta": 0.0261,
+    "ci95": [
+     0.0,
+     0.052
+    ],
+    "per_training": [
+     0.0245,
+     0.0621,
+     -0.0083
+    ],
+    "all_trainings_positive": false
+   },
+   "ATC Equipment / Nav Facility / Buildings": {
+    "n_heldout": 1154,
+    "narr": 0.7612,
+    "syn": 0.8326,
+    "delta": 0.0715,
+    "ci95": [
+     0.0493,
+     0.0936
+    ],
+    "per_training": [
+     0.0569,
+     0.1113,
+     0.0462
+    ],
+    "all_trainings_positive": true
+   },
+   "Airport": {
+    "n_heldout": 1834,
+    "narr": 0.7827,
+    "syn": 0.8086,
+    "delta": 0.0259,
+    "ci95": [
+     0.0089,
+     0.0425
+    ],
+    "per_training": [
+     0.03,
+     0.0145,
+     0.0332
+    ],
+    "all_trainings_positive": true
+   },
+   "Weather": {
+    "n_heldout": 2662,
+    "narr": 0.8465,
+    "syn": 0.876,
+    "delta": 0.0295,
+    "ci95": [
+     0.0161,
+     0.0435
+    ],
+    "per_training": [
+     -0.003,
+     0.0233,
+     0.0683
+    ],
+    "all_trainings_positive": false
+   },
+   "Company Policy": {
+    "n_heldout": 3106,
+    "narr": 0.7771,
+    "syn": 0.8093,
+    "delta": 0.0322,
+    "ci95": [
+     0.0193,
+     0.0452
+    ],
+    "per_training": [
+     0.0222,
+     0.0654,
+     0.0091
+    ],
+    "all_trainings_positive": true
+   },
+   "Procedure": {
+    "n_heldout": 3258,
+    "narr": 0.838,
+    "syn": 0.8531,
+    "delta": 0.0152,
+    "ci95": [
+     0.0058,
+     0.0255
+    ],
+    "per_training": [
+     0.0213,
+     0.0178,
+     0.0064
+    ],
+    "all_trainings_positive": true
+   },
+   "Ambiguous": {
+    "n_heldout": 4774,
+    "narr": 0.6111,
+    "syn": 0.691,
+    "delta": 0.08,
+    "ci95": [
+     0.0663,
+     0.0941
+    ],
+    "per_training": [
+     0.0696,
+     0.0853,
+     0.085
+    ],
+    "all_trainings_positive": true
+   }
+  },
+  "heldout_ge_1000": {
+   "tasks": 8,
+   "positive_mean": 8,
+   "ci_above_zero": 7,
+   "all_three_trainings_positive": 6,
+   "range_delta": [
+    0.0152,
+    0.08
+   ]
+  }
+ }
+}

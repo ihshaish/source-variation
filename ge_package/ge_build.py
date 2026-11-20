@@ -1,7 +1,7 @@
 """Builds the record file and every split scheme from the raw records CSV.
 
 Reads ge_data/ge_records.csv with the columns listed in README.md:
-  record_id, date (YYYYMM or YYYY-MM-DD), customer, technician, repair,
+  record_id, date (DD/MM/YYYY, YYYY-MM-DD or YYYYMM), customer, technician, repair,
   label (0-3 or a class name mapped through label_map.json), unit_serial
   (optional), operator (optional)
 
@@ -12,7 +12,7 @@ held-out test record_ids for each scheme:
   dup_near         near-duplicates (minhash, verified Jaccard >= 0.8) kept together
   unit_grouped     all records of one unit_serial on one side (if the column is present)
   operator_grouped all records of one operator on one side (if the column is present)
-  temporal         train = earliest 80% by date, test = latest 20%
+  temporal         test = latest 20% by date; records without a readable date stay in training
 
 Run: python ge_build.py
 """
@@ -21,12 +21,26 @@ import gzip
 import json
 import os
 from collections import Counter
+from datetime import datetime
 
 import numpy as np
 
 from ge_lib import DATA, GLOBAL_SEED, tokenize
 
 LABEL_MAP_PATH = os.path.join(DATA, "label_map.json")
+DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%Y%m", "%Y%m%d", "%d/%m/%y", "%Y/%m/%d")
+
+
+def parse_date(text):
+    """Returns the date as a datetime, or None when no known format fits."""
+    text = (text or "").strip()
+    for date_format in DATE_FORMATS:
+        candidate = text if date_format == "%Y%m" else text[:10]
+        try:
+            return datetime.strptime(candidate, date_format)
+        except ValueError:
+            pass
+    return None
 
 
 def exact_groups(texts):
@@ -137,8 +151,17 @@ def main():
     if any(record["operator"] for record in records):
         splits["operator_grouped"] = stratified_take(
             labels, 0.2, rng, groups=[record["operator"] or record["id"] for record in records])
-    order = np.argsort([record["date"] for record in records], kind="stable")
-    splits["temporal"] = set(order[-round(0.2 * len(records)):].tolist())
+    dated = []
+    for i, record in enumerate(records):
+        date = parse_date(record["date"])
+        if date is not None:
+            dated.append((date, i))
+    dated.sort()
+    latest = dated[-round(0.2 * len(records)):]
+    splits["temporal"] = {i for _, i in latest}
+    if latest:
+        print(f"split temporal: {len(records) - len(dated)} records without a date, "
+              f"test dates {latest[0][0]:%Y-%m-%d} to {latest[-1][0]:%Y-%m-%d}")
 
     out = {name: sorted(records[i]["id"] for i in indices) for name, indices in splits.items()}
     with open(os.path.join(DATA, "splits.json"), "w") as f:
