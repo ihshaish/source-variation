@@ -1,0 +1,29 @@
+name: GE scripts on synthetic records
+
+on:
+  push:
+    paths:
+      - "ge_package/**"
+      - ".github/workflows/container.yml"
+  workflow_dispatch:
+
+jobs:
+  container:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t ge-synthetic ge_package
+      - name: Generate records, train, paired statistics
+        run: docker run --rm -v "$PWD/synthetic:/app/synthetic" ge-synthetic
+      - name: CPU inference latency, one thread
+        run: >
+          docker run --rm -v "$PWD/synthetic:/app/synthetic" ge-synthetic
+          python bench_latency.py --threads 1 --out synthetic/latency.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-run
+          path: |
+            synthetic/results
+            synthetic/latency.json
